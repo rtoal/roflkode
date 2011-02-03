@@ -50,13 +50,13 @@ PARSER_END(Parser)
 // Whitespace and comments
 
 SKIP: {
-    " " | "\t" | "\n" | "\r" | <"BTW" (~["\n","\r"])*>
+    " " | "\t" | <"BTW" (~["\n","\r"])*>
 }
 
 TOKEN: {
     "HAI" | "KTHXBYE" | "CAN" | "HAS" | "I" | "A"
 |
-    < BR: "," | "\n" >
+    < BR: "," | "\n" | "\r" >
 |
     < INTLIT: ("-")? (["0"-"9"])+ >
 |
@@ -117,15 +117,17 @@ Script parseScript(): {
     Statement s;
 }{
     "HAI"
-    <BR>
+    (<BR>)+
     ( s = parseStmt() {statements.add(s);} )+
     "KTHXBYE"
+    (<BR>)*
     <EOF>
     {return new Script(statements);}
 }
 
 Statement parseStmt(): {
 }{
-    <BR>
+    "I"
+    (<BR>)+
     {return null;}
 }

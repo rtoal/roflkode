@@ -15,14 +15,18 @@ import edu.lmu.cs.xlg.util.Log;
 public class Compiler {
 
     // A logger for logging messages (both regular and error messages).
-    // The base properties file is called <code>Carlos.properties</code>.
-    private Log log = new Log("Carlos", new PrintWriter(System.out, true));
+    // The base properties file is called <code>roflkode.properties</code>.
+    private Log log = new Log("roflkode", new PrintWriter(System.out, true));
 
     /**
      * Runs the compiler as an application.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         System.out.println("Hello, this is the compiler.");
+        System.out.println("All I can do now is check syntax.");
+
+        Compiler compiler = new Compiler();
+        System.out.println(compiler.checkSyntax(args[0]));
     }
 
     /**
@@ -40,7 +44,7 @@ public class Compiler {
         Reader reader = new FileReader(name + ".rk");
         Parser parser = new Parser(reader);
         try {
-            log.message("checking_syntax");
+            log.message("syntax.checking");
             return parser.parse(reader, log);
         } finally {
             reader.close();
