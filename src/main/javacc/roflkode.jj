@@ -48,9 +48,13 @@ TOKEN: {
     | "UV" | "AKA" | "BRB" | "WIF" | "TEH" | "KAR" | "INT" | "ITZ" | "HWGA"
     | "DIAF" | "MAEK" | "B00L" | "THEM" | "YARN" | "GTFO" | "NUMBR" | "SRSLY"
     | "HEREZ" | "GIMMEH" | "PWNZOR" | "BUKKIT" | "UPZORZ" | "FACEPALM"
-    | "NERFZORZ"
-|
-    "TODO"
+    | "NERFZORZ" | "IF" | "CEPT" | "TIL" | "WHIEL" | "NO" | "OIC" | "WTF"
+    | "OMG" | "WAI" | "WERD" | "MEBBE" | "OMGWTF" | "O" | "IM" | "IN" | "TO"
+    | "UP" | "OR" | "AS" | "BY" | "WIN" | "THX" | "PLZ" | "N00B" | "NERF"
+    | "FAIL" | "FROM" | "SAEM" | "NOES" | "PWNS" | "LIST" | "THRU" | "MKAY"
+    | "OUTTA" | "PWNED" | "AWSUM" | "UPPIN" | "NERFIN" | "DIVIDZ" | "BITZLEFT"
+    | "BITZRIGHT" | "TIEMZ" | "OVR" | "LEFTOVR" | "NAA" | "BITZFLIP" | "SIEZ"
+    | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR"
 |
     "?" | "!!" | "!!!"
 |
@@ -143,7 +147,11 @@ void parseStmt(): {
 
 void parseDec(): {
 }{
-    parseVardec() | parseTypedec() | parseFundec()
+    LOOKAHEAD(2) parseVardec()
+    |
+    parseTypedec()
+    |
+    parseFundec()
 }
 
 void parseVardec(): {
@@ -191,7 +199,7 @@ void parseSimpleStmt(): {
     |
     "NERFZORZ" <ID>
     |
-    parseVar() "R" parseExp()
+    LOOKAHEAD(parseVar() "R") parseVar() "R" parseExp()
     |
     "GTFO" (<ID>)?
     |
@@ -210,85 +218,160 @@ void parseSimpleStmt(): {
 
 void parseModifier(): {
 }{
-    "TODO"
+    (
+        "IF"
+    |
+        "CEPT" "IF"
+    |
+        "WHIEL"
+    |
+        "TIL"
+    )
+    parseExp()
 }
 
 void parseComplexStmt(): {
 }{
-    "TODO"
+    LOOKAHEAD(parseExp() "?") parseConditional()
+    |
+    parseSwitch()
+    |
+    parseLoop()
+    |
+    parseTry()
 }
 
 void parseConditional(): {
 }{
-    "TODO"
+    parseExp() "?" (<BR>)+
+    "WERD" (<BR>)+ (parseStmt())+
+    (
+        "MEBBE" parseExp() (<BR>)*
+        (parseStmt())+
+    )*
+    (
+        "NO" "WAI" (<BR>)*
+        (parseStmt())+
+    )?
+    "OIC"
 }
 
 void parseSwitch(): {
 }{
-    "TODO"
+    parseExp() "WTF" "?" (<BR>)+
+    (
+        "OMG" parseLiteral() (<BR>)+ (parseStmt())+
+    )+
+    "OMGWTF" (<BR>)+
+    (parseStmt())+
+    "OIC"
 }
 
 void parseLoop(): {
 }{
-    "TODO"
+    parseLoopStart() (<BR>)+
+    parseLoopControl() (<BR>)*
+    (LOOKAHEAD(2) parseStmt())+
+    parseLoopEnd()
 }
 
 void parseLoopStart(): {
 }{
-    "TODO"
+    "IM" "IN" "YR" <ID>
 }
 
 void parseLoopControl(): {
 }{
-    "TODO"
+    ("WHIEL" | "TIL") parseExp()
+    |
+    ("UPPIN" | "NERFIN")
+    <ID>
+    (
+        "FROM" parseExp() "TO" parseExp()
+    |
+        "THRU" parseExp()
+    )
 }
 
 void parseLoopEnd(): {
 }{
-    "TODO"
+    "IM" "OUTTA" "YR" <ID>
 }
 
 void parseTry(): {
 }{
-    "TODO"
+    "PLZ" parseSimpleStmt()
+    (<BR>)+
+    "AWSUM" "THX" (<BR>)+
+    (parseStmt())+
+    "O" "NOES" (<BR>)+
+    (parseStmt())+
+    "MKAY"
 }
 
 void parseExp(): {
 }{
-    "TODO"
+    parseLiteral()
 }
 
 void parseLiteral(): {
 }{
-    "TODO"
+    "N00B"
+|
+    "WIN"
+|
+    "FAIL"
+|
+    <INTLIT>
+|
+    <NUMLIT>
+|
+    <CHARLIT>
+|
+    <STRINGLIT>
 }
 
 void parseVar(): {
 }{
-    "TODO"
+    <ID> ("LIST")* (parseExp())*
+    (
+        "!!" parseExp()
+    |
+        "!!!" <ID>
+    )*
 }
 
 void parseRelop(): {
 }{
-    "TODO"
+    LOOKAHEAD(2) "PWNS" "OR" "SAEM" "AS"
+    |
+    "PWNS"
+    |
+    LOOKAHEAD(2) "PWNED" "BY" "OR" "SAEM" "AS"
+    |
+    "PWNED" "BY"
+    |
+    "SAEM" "AS"
+    |
+    "DIVIDZ"
 }
 
 void parseShiftop(): {
 }{
-    "TODO"
+    "BITZLEFT" | "BITZRIGHT"
 }
 
 void parseAddop(): {
 }{
-    "TODO"
+    "UP" | "NERF"
 }
 
 void parseMulop(): {
 }{
-    "TODO"
+    "TIEMZ" | "OVR" | "LEFTOVR"
 }
 
 void parsePrefixop(): {
 }{
-    "TODO"
+    "NAA" | "BITZFLIP" | "SIEZ" "UV" | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR"
 }
