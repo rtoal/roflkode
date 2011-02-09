@@ -54,7 +54,8 @@ TOKEN: {
     | "FAIL" | "FROM" | "SAEM" | "NOES" | "PWNS" | "LIST" | "THRU" | "MKAY"
     | "OUTTA" | "PWNED" | "AWSUM" | "UPPIN" | "NERFIN" | "DIVIDZ" | "BITZLEFT"
     | "BITZRIGHT" | "TIEMZ" | "OVR" | "LEFTOVR" | "NAA" | "BITZFLIP" | "SIEZ"
-    | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR"
+    | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR" | "BITOR" | "BITAND"
+    | "BITXOR" | "CATN8" | "ORELSE" | "ANALSO"
 |
     "?" | "!!" | "!!!"
 |
@@ -311,7 +312,100 @@ void parseTry(): {
 
 void parseExp(): {
 }{
+    parseExp1()
+    (
+        "ORELSE"
+        parseExp1()
+    )*
+}
+
+void parseExp1(): {
+}{
+    parseExp2()
+    (
+        "ANALSO"
+        parseExp2()
+    )*
+}
+
+void parseExp2(): {
+}{
+    parseExp3()
+    (
+        "BITOR"
+        parseExp3()
+    )*
+}
+
+void parseExp3(): {
+}{
+    parseExp4()
+    (
+        "BITXOR"
+        parseExp4()
+    )*
+}
+
+void parseExp4(): {
+}{
+    parseExp5()
+    (
+        "BITAND"
+        parseExp5()
+    )*
+}
+
+void parseExp5(): {
+}{
+    parseExp6()
+    (
+        parseRelop()
+        parseExp6()
+    )?
+}
+
+void parseExp6(): {
+}{
+    parseExp7()
+    (
+        parseShiftop()
+        parseExp7()
+    )*
+}
+
+void parseExp7(): {
+}{
+    parseExp8()
+    (
+        parseAddop()
+        parseExp8()
+    )*
+}
+
+void parseExp8(): {
+}{
+    parseExp9()
+    (
+        parseMulop()
+        parseExp9()
+    )*
+}
+
+void parseExp9(): {
+}{
+    (parsePrefixop())?
+    parseExp10()
+}
+
+void parseExp10(): {
+}{
     parseLiteral()
+    |
+    parseVar()
+    |
+  //  "CATN8" (parseExp())+
+   // |
+    "(" parseExp() ")"
 }
 
 void parseLiteral(): {
