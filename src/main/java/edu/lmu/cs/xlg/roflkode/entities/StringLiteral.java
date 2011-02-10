@@ -3,6 +3,7 @@ package edu.lmu.cs.xlg.roflkode.entities;
 import java.util.List;
 
 public class StringLiteral extends Literal {
+
     private List<Integer> values;
 
     /**

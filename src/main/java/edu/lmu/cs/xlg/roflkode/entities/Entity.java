@@ -15,32 +15,31 @@ import java.util.Set;
 /**
  * Superclass for all entities in the compiler.
  *
- * The front end of the compiler produces an abstract syntax tree which is then
- * decorated (or transformed) into a semantic graph. The nodes this structure
- * are called entities. The hierarchy for entities will look something like
- * this:
+ * The front end of the compiler produces an abstract syntax tree which is then decorated (or
+ * transformed) into a semantic graph. The nodes this structure are called entities. The hierarchy
+ * for entities will look something like this:
  *
  * <pre>
  * Entity
  *    Block
  *        Script
- *    Declarable
- *       Variable
- *       Type
- *          ArrayType
- *          BukkitType
- *       Function
+ *    Variable
+ *    Type
+ *       ArrayType
+ *       BukkitType
+ *    Function
  *    Statement
  *       Declaration
  *       IncrementStatement
  *       CallStatement
  *       AssignmentStatement
  *       BreakStatement
- *       ContinueStatement
+ *       AgainStatement
  *       ReturnStatement
  *       YoStatement
  *       FacepalmStatement
  *       IfStatement
+ *       SwitchStatement
  *       WhileStatement
  *       ForStatement
  *    Expression
@@ -52,28 +51,29 @@ import java.util.Set;
  *          StringLiteral
  *       VariableExpression
  *          SimpleVariableReference
- *          SubscriptedVariable
- *          DottedVariable
+ *          ArrayIndexVariable
+ *          BukkitSlotVariable
  *          Application
  *       PrefixExpression
  *       InfixExpression
  * </pre>
  *
- * Each concrete entity class has a constructor to fill in the "syntactic" part
- * of the entity. For example, we know the name of a variable reference while
- * generating the abstract syntax tree, so that is filled in by the constructor.
- * However, we don't know until semantic analysis exactly which variable is
- * being referred to, so that field is not filled in by the constructor.
+ * Each concrete entity class has a constructor to fill in the "syntactic" part of the entity. For
+ * example, we know the name of a variable reference while generating the abstract syntax tree, so
+ * that is filled in by the constructor. However, we don't know until semantic analysis exactly
+ * which variable is being referred to, so that field is not filled in by the constructor.
  */
 public abstract class Entity {
 
-    // Collection of all entities that have ever been created, as a
-    // map with the entities as keys and their ids as values.
+    /**
+     * Collection of all entities that have ever been created, as a map with the entities as keys
+     * and their ids as values.
+     */
     private static Map<Entity, Integer> all = new LinkedHashMap<Entity, Integer>();
 
     /**
-     * Creates an entity, "assigning" it a new unique id by placing it in a
-     * global map mapping the entity to its id.
+     * Creates an entity, "assigning" it a new unique id by placing it in a global map mapping the
+     * entity to its id.
      */
     public Entity() {
         synchronized (all) {
@@ -89,9 +89,9 @@ public abstract class Entity {
     }
 
     /**
-     * Writes a description of all entities reachable from the given entity, one
-     * per line, to the given writer. The description includes its id, class
-     * name, and all non-static attributes with non-null values.
+     * Writes a description of all entities reachable from the given entity, one per line, to the
+     * given writer. The description includes its id, class name, and all non-static attributes with
+     * non-null values.
      */
     public static void dump(PrintWriter writer, Entity e) {
         Set<Entity> used = new HashSet<Entity>();
@@ -162,8 +162,7 @@ public abstract class Entity {
     }
 
     /**
-     * Writes information for all entities in the collection iterated over by
-     * the given iterator.
+     * Writes information for all entities in the collection iterated over by the given iterator.
      */
     private static void dump(PrintWriter writer, Iterable<?> i, Set<Entity> used) {
         for (Object object : i) {
@@ -174,8 +173,8 @@ public abstract class Entity {
     }
 
     /**
-     * Returns a list of all non-private fields of class c, together with fields
-     * of its ancestor classes, assuming that c is a descendant class of Entity.
+     * Returns a list of all non-private fields of class c, together with fields of its ancestor
+     * classes, assuming that c is a descendant class of Entity.
      */
     private static List<Field> relevantFields(Class<?> c) {
         List<Field> attributes = new ArrayList<Field>();
