@@ -118,6 +118,7 @@ Script parseScript(): {
     List<Statement> statements = new ArrayList<Statement>();
     Statement s;
 }{
+    (<BR>)*
     "HAI"
     (<BR>)+
     (parseImport())*
@@ -403,8 +404,8 @@ void parseExp10(): {
     |
     parseVar()
     |
-  //  "CATN8" (parseExp())+
-   // |
+    "CATN8" (parseExp())+
+    |
     "(" parseExp() ")"
 }
 
