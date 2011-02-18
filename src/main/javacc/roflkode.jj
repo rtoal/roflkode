@@ -44,7 +44,7 @@ SKIP: {
 }
 
 TOKEN: {
-    "HAI" | "KTHXBYE" | "CAN" | "HAS" | "I" | "A" | "R" | "AN" | "YO" | "YR"
+    "HAI" | "KTHXBYE" | "CAN" | "HAS" | "I" | "A" | "R" | "AN" | "YO" | "UR"
     | "UV" | "AKA" | "BRB" | "WIF" | "TEH" | "KAR" | "INT" | "ITZ" | "HWGA"
     | "DIAF" | "MAEK" | "B00L" | "THEM" | "YARN" | "GTFO" | "NUMBR" | "SRSLY"
     | "HEREZ" | "GIMMEH" | "PWNZOR" | "BUKKIT" | "UPZORZ" | "FACEPALM"
@@ -59,7 +59,7 @@ TOKEN: {
 |
     "?" | "!!" | "!!!"
 |
-    < BR: "," | "\n" | "\r" >
+    < BR: "," | "\n" | "\r" | "\u0085" | "\u2028" | "\u2029" >
 |
     < INTLIT: ("-")? (["0"-"9"])+ >
 |
@@ -151,15 +151,15 @@ void parseDec(): {
 }{
     LOOKAHEAD(2) parseVardec()
     |
-    parseTypedec()
-    |
     parseFundec()
+    |
+    parseTypedec()
 }
 
 void parseVardec(): {
 }{
     "I" "HAS" "A" parseType() <ID>
-    ("ITZ" "4EVER" parseExp())?
+    ("ITZ" ("4EVER")? parseExp())?
 }
 
 void parseType(): {
@@ -185,7 +185,7 @@ void parseFundec(): {
 
 void parseParams(): {
 }{
-    ("WIF")? "YR" parseType() <ID>
+    ("WIF")? "UR" parseType() <ID>
     ("AN" parseType() <ID>)*
 }
 
@@ -207,7 +207,7 @@ void parseSimpleStmt(): {
     |
     "HWGA" (<ID>)?
     |
-    "HEREZ" "YR" parseExp()
+    "HEREZ" "UR" parseExp()
     |
     "DIAF" (parseExp())?
     |
@@ -271,15 +271,15 @@ void parseSwitch(): {
 
 void parseLoop(): {
 }{
-    parseLoopStart() (<BR>)+
-    parseLoopControl() (<BR>)*
+    parseLoopStart() (<BR>)*
+    parseLoopControl() (<BR>)+
     (LOOKAHEAD(2) parseStmt())+
     parseLoopEnd()
 }
 
 void parseLoopStart(): {
 }{
-    "IM" "IN" "YR" <ID>
+    "IM" "IN" "UR" <ID>
 }
 
 void parseLoopControl(): {
@@ -297,7 +297,7 @@ void parseLoopControl(): {
 
 void parseLoopEnd(): {
 }{
-    "IM" "OUTTA" "YR" <ID>
+    "IM" "OUTTA" "UR" <ID>
 }
 
 void parseTry(): {
@@ -442,7 +442,7 @@ void parseRelop(): {
     |
     "PWNS"
     |
-    LOOKAHEAD(2) "PWNED" "BY" "OR" "SAEM" "AS"
+    LOOKAHEAD(3) "PWNED" "BY" "OR" "SAEM" "AS"
     |
     "PWNED" "BY"
     |
