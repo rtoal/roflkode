@@ -2,6 +2,9 @@ package edu.lmu.cs.xlg.roflkode.entities;
 
 import java.util.List;
 
+/**
+ * A literal of type string.  A string literal is represented as a list of codepoints.
+ */
 public class StringLiteral extends Literal {
 
     private List<Integer> values;

@@ -1,0 +1,28 @@
+package edu.lmu.cs.xlg.roflkode.entities;
+
+public class AssignmentStatement extends Expression {
+    private VariableExpression left;
+    private Expression right;
+
+    /**
+     * Creates an assignment statement.
+     */
+    public AssignmentStatement(VariableExpression left, Expression right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    /**
+     * Returns the destination of the assignment.
+     */
+    public VariableExpression getLeft() {
+        return left;
+    }
+
+    /**
+     * Returns the source of the assignment.
+     */
+    public Expression getRight() {
+        return right;
+    }
+}
