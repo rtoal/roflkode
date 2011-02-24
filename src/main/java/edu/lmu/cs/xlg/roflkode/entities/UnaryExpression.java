@@ -1,6 +1,7 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
 public class UnaryExpression extends Expression {
+
     private String op;
     private Expression operand;
 

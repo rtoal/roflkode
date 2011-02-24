@@ -122,11 +122,11 @@ Script parseScript(): {
     "HAI"
     (<BR>)+
     (parseImport())*
-    (parseStmt())+
+    (s = parseStmt() {statements.add(s);})+
     "KTHXBYE"
     (<BR>)*
     <EOF>
-    {return new Script(null);}
+    {return new Script(statements);}
 }
 
 void parseImport(): {
@@ -134,17 +134,20 @@ void parseImport(): {
     "CAN" "HAS" <ID> "?" (<BR>)+
 }
 
-void parseStmt(): {
+Statement parseStmt(): {
+    Statement s;
 }{
     (
-        parseDec()
+        parseDec() {s = null; /* TODO */}
     |
         LOOKAHEAD ("PLZ" | "IM" | parseExp() ("?" | "WTF")) parseComplexStmt()
+        {s = null; /* TODO */}
     |
-        parseSimpleStmt()
-        (parseModifier())?
+        s = parseSimpleStmt()
+        (parseModifier())?   /* TODO */
     )
     (<BR>)+
+    {return s;}
 }
 
 void parseDec(): {
@@ -189,33 +192,36 @@ void parseParams(): {
     ("AN" parseType() <ID>)*
 }
 
-void parseSimpleStmt(): {
+Statement parseSimpleStmt(): {
+    List<Expression> expressions = new ArrayList<Expression>();
+    Expression e;
 }{
-    "YO" (parseExp())+
+    "YO" (e = parseExp() {expressions.add(e);})+
+    {return new YoStatement(expressions);}
     |
-    "FACEPALM" (parseExp())+
+    "FACEPALM" (parseExp())+ {return /* TODO */ null;}
     |
-    "PWNZOR" <ID>
+    "PWNZOR" <ID> {return /* TODO */ null;}
     |
-    "UPZORZ" <ID>
+    "UPZORZ" <ID> {return /* TODO */ null;}
     |
-    "NERFZORZ" <ID>
+    "NERFZORZ" <ID> {return /* TODO */ null;}
     |
-    LOOKAHEAD(parseVar() "R") parseVar() "R" parseExp()
+    LOOKAHEAD(parseVar() "R") parseVar() "R" parseExp() {return /* TODO */ null;}
     |
-    "GTFO" (<ID>)?
+    "GTFO" (<ID>)? {return /* TODO */ null;}
     |
-    "HWGA" (<ID>)?
+    "HWGA" (<ID>)? {return /* TODO */ null;}
     |
-    "HEREZ" "UR" parseExp()
+    "HEREZ" "UR" parseExp() {return /* TODO */ null;}
     |
-    "DIAF" (parseExp())?
+    "DIAF" (parseExp())? {return /* TODO */ null;}
     |
-    "GIMMEH" (<ID>)
+    "GIMMEH" (<ID>) {return /* TODO */ null;}
     |
-    "BRB" (parseExp())
+    "BRB" (parseExp()) {return /* TODO */ null;}
     |
-    <ID> (parseExp())*
+    <ID> (parseExp())* {return /* TODO */ null;}
 }
 
 void parseModifier(): {
@@ -469,8 +475,14 @@ VariableExpression parseVar(): {
     Token p;
 }{
     t = <ID>
-    {v = new SimpleVariableReference(t.image);}
     (e = parseExp() {arguments.add(e);})*
+    {
+        if (arguments.isEmpty()) {
+            v = new SimpleVariableReference(t.image);
+        } else {
+            v = new CallExpression(t.image, arguments);
+        }
+    }
     (
         "!!" e = parseExp()
         {v = new ArraySlot(v, e);}
@@ -506,8 +518,9 @@ String parseShiftop(): {
 String parseAddop(): {
     Token t;
 }{
-    (t = "UP" | t = "NERF")
-    {return t.image;}
+    t = "UP" {return "+";}
+|
+    t = "NERF" {return "-";}
 }
 
 String parseMulop(): {

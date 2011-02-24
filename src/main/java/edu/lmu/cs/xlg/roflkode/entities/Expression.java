@@ -3,6 +3,6 @@ package edu.lmu.cs.xlg.roflkode.entities;
 /**
  * A Roflkode expression.
  */
-public abstract class Expression {
+public abstract class Expression extends Entity {
 
 }
