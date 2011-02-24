@@ -7,12 +7,18 @@ import java.util.List;
  */
 public class Block extends Entity {
 
-    List<Statement> statements;
+    private List<Statement> statements;
 
+    /**
+     * Creates a block.
+     */
     public Block(List<Statement> statements) {
         this.statements = statements;
     }
 
+    /**
+     * Returns the statement list comprising the block.
+     */
     public List<Statement> getStatements() {
         return statements;
     }

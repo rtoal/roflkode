@@ -51,11 +51,13 @@ import java.util.Set;
  *          StringLiteral
  *       VariableExpression
  *          SimpleVariableReference
- *          ArrayIndexVariable
- *          BukkitSlotVariable
+ *          ArraySlot
+ *          BukkitSlot
  *          Application
- *       PrefixExpression
- *       InfixExpression
+ *       UnaryExpression
+ *       BinaryExpression
+ *       ArrayExpression
+ *       BukkitExpression
  * </pre>
  *
  * Each concrete entity class has a constructor to fill in the "syntactic" part of the entity. For

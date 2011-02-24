@@ -1,6 +1,10 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
+/**
+ * A Roflkode assignment statement.
+ */
 public class AssignmentStatement extends Expression {
+
     private VariableExpression left;
     private Expression right;
 

@@ -51,13 +51,13 @@ TOKEN: {
     | "NERFZORZ" | "IF" | "CEPT" | "TIL" | "WHIEL" | "NO" | "OIC" | "WTF"
     | "OMG" | "WAI" | "WERD" | "MEBBE" | "OMGWTF" | "O" | "IM" | "IN" | "TO"
     | "UP" | "OR" | "AS" | "BY" | "WIN" | "THX" | "PLZ" | "N00B" | "NERF"
-    | "FAIL" | "FROM" | "SAEM" | "NOES" | "PWNS" | "LIST" | "THRU" | "MKAY"
+    | "FAIL" | "FROM" | "SAEM" | "NOES" | "PWNS" | "THRU" | "MKAY"
     | "OUTTA" | "PWNED" | "AWSUM" | "UPPIN" | "NERFIN" | "DIVIDZ" | "BITZLEFT"
     | "BITZRIGHT" | "TIEMZ" | "OVR" | "LEFTOVR" | "NAA" | "BITZFLIP" | "SIEZ"
     | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR" | "BITOR" | "BITAND"
     | "BITXOR" | "CATN8" | "ORELSE" | "ANALSO"
 |
-    "?" | "!!" | "!!!"
+    "?" | "!!" | "!!!" | "<:" | ":>" | "[:" | ":]"
 |
     < BR: "," | "\n" | "\r" | "\u0085" | "\u2028" | "\u2029" >
 |
@@ -139,10 +139,10 @@ void parseStmt(): {
     (
         parseDec()
     |
+        LOOKAHEAD ("PLZ" | "IM" | parseExp() ("?" | "WTF")) parseComplexStmt()
+    |
         parseSimpleStmt()
         (parseModifier())?
-    |
-        parseComplexStmt()
     )
     (<BR>)+
 }
@@ -311,162 +311,224 @@ void parseTry(): {
     "MKAY"
 }
 
-void parseExp(): {
+Expression parseExp(): {
+    Expression e1;
+    Expression e2;
 }{
-    parseExp1()
-    (
-        "ORELSE"
-        parseExp1()
-    )*
+    e1 = parseExp1()
+    ("ORELSE" e2 = parseExp1() {e1 = new BinaryExpression(e1, "ORELSE", e2);})*
+    {return e1;}
 }
 
-void parseExp1(): {
+Expression parseExp1(): {
+    Expression e1;
+    Expression e2;
 }{
-    parseExp2()
-    (
-        "ANALSO"
-        parseExp2()
-    )*
+    e1 = parseExp2()
+    ("ANALSO" e2 = parseExp2() {e1 = new BinaryExpression(e1, "ANALSO", e2);})*
+    {return e1;}
 }
 
-void parseExp2(): {
+Expression parseExp2(): {
+    Expression e1;
+    Expression e2;
 }{
-    parseExp3()
-    (
-        "BITOR"
-        parseExp3()
-    )*
+    e1 = parseExp3()
+    ("BITOR" e2 = parseExp3() {e1 = new BinaryExpression(e1, "BITOR", e2);})*
+    {return e1;}
 }
 
-void parseExp3(): {
+Expression parseExp3(): {
+    Expression e1;
+    Expression e2;
 }{
-    parseExp4()
-    (
-        "BITXOR"
-        parseExp4()
-    )*
+    e1 = parseExp4()
+    ("BITXOR" e2 = parseExp4() {e1 = new BinaryExpression(e1, "BITXOR", e2);})*
+    {return e1;}
 }
 
-void parseExp4(): {
+Expression parseExp4(): {
+    Expression e1;
+    Expression e2;
 }{
-    parseExp5()
-    (
-        "BITAND"
-        parseExp5()
-    )*
+    e1 = parseExp5()
+    ("BITAND" e2 = parseExp5() {e1 = new BinaryExpression(e1, "BITAND", e2);})*
+    {return e1;}
 }
 
-void parseExp5(): {
+Expression parseExp5(): {
+    String op;
+    Expression e1;
+    Expression e2;
 }{
-    parseExp6()
+    e1 = parseExp6()
     (
-        parseRelop()
-        parseExp6()
+        op = parseRelop()
+        e2 = parseExp6()
+        {e1 = new BinaryExpression(e1, op, e2);}
     )?
+    {return e1;}
 }
 
-void parseExp6(): {
+Expression parseExp6(): {
+    String op;
+    Expression e1;
+    Expression e2;
 }{
-    parseExp7()
+    e1 = parseExp7()
     (
-        parseShiftop()
-        parseExp7()
+        op = parseShiftop()
+        e2 = parseExp7()
+        {e1 = new BinaryExpression(e1, op, e2);}
     )*
+    {return e1;}
 }
 
-void parseExp7(): {
+
+Expression parseExp7(): {
+    String op;
+    Expression e1;
+    Expression e2;
 }{
-    parseExp8()
+    e1 = parseExp8()
     (
-        parseAddop()
-        parseExp8()
+        op = parseAddop()
+        e2 = parseExp8()
+        {e1 = new BinaryExpression(e1, op, e2);}
     )*
+    {return e1;}
 }
 
-void parseExp8(): {
+Expression parseExp8(): {
+    String op;
+    Expression e1;
+    Expression e2;
 }{
-    parseExp9()
+    e1 = parseExp9()
     (
-        parseMulop()
-        parseExp9()
+        op = parseMulop()
+        e2 = parseExp9()
+        {e1 = new BinaryExpression(e1, op, e2);}
     )*
+    {return e1;}
 }
 
-void parseExp9(): {
+
+Expression parseExp9(): {
+    String op = null;
+    Expression e;
 }{
-    (parsePrefixop())?
-    parseExp10()
+    (op = parsePrefixop())? e = parseExp10()
+    {return op == null ? e : new UnaryExpression(op, e);}
 }
 
-void parseExp10(): {
+Expression parseExp10(): {
+    Expression e;
+    List<Expression> list = new ArrayList<Expression>();
+    Token t;
 }{
-    parseLiteral()
-    |
-    parseVar()
-    |
-    "CATN8" (parseExp())+
-    |
-    "(" parseExp() ")"
+    e = parseLiteral() {return e;}
+|
+    LOOKAHEAD(2) t = <ID> "<:" (e = parseExp() {list.add(e);})* ":>"
+    {return new BukkitExpression(t.image, list);}
+|
+    e = parseVar() {return e;}
+|
+    "[:" (e = parseExp() {list.add(e);})* ":]"
+    {return new ArrayExpression(list);}
+|
+    "CATN8" (e = parseExp() {list.add(e);})+
+    {return new CatenateExpression(list);}
+|
+    "(" e = parseExp() ")" {return e;}
 }
 
-void parseLiteral(): {
+Literal parseLiteral(): {
+    Token t;
 }{
-    "N00B"
+    "N00B" {return NoobLiteral.INSTANCE;}
 |
-    "WIN"
+    "WIN" {return BooleanLiteral.WIN;}
 |
-    "FAIL"
+    "FAIL" {return BooleanLiteral.FAIL;}
 |
-    <INTLIT>
+    t = <INTLIT> {return new IntegerLiteral(t.image);}
 |
-    <NUMLIT>
+    t = <NUMLIT> {return new NumberLiteral(t.image);}
 |
-    <CHARLIT>
+    t = <CHARLIT> {return new KarLiteral(t.image);}
 |
-    <STRINGLIT>
+    t = <STRINGLIT> {return new StringLiteral(t.image);}
 }
 
-void parseVar(): {
+VariableExpression parseVar(): {
+    VariableExpression v;
+    List<Expression> arguments = new ArrayList<Expression>();
+    Expression e;
+    Token t;
+    Token p;
 }{
-    <ID> ("LIST")* (parseExp())*
+    t = <ID>
+    {v = new SimpleVariableReference(t.image);}
+    (e = parseExp() {arguments.add(e);})*
     (
-        "!!" parseExp()
+        "!!" e = parseExp()
+        {v = new ArraySlot(v, e);}
     |
-        "!!!" <ID>
+        "!!!" p = <ID>
+        {v = new BukkitSlot(v, p.image);}
     )*
+    {return v;}
 }
 
-void parseRelop(): {
+String parseRelop(): {
 }{
-    LOOKAHEAD(2) "PWNS" "OR" "SAEM" "AS"
+    LOOKAHEAD(2) "PWNS" "OR" "SAEM" "AS" {return ">=";}
     |
-    "PWNS"
+    "PWNS" {return ">";}
     |
-    LOOKAHEAD(3) "PWNED" "BY" "OR" "SAEM" "AS"
+    LOOKAHEAD(3) "PWNED" "BY" "OR" "SAEM" "AS" {return "<=";}
     |
-    "PWNED" "BY"
+    "PWNED" "BY" {return "<";}
     |
-    "SAEM" "AS"
+    "SAEM" "AS" {return "==";}
     |
-    "DIVIDZ"
+    "DIVIDZ" {return "\\";}
 }
 
-void parseShiftop(): {
+String parseShiftop(): {
+    Token t;
 }{
-    "BITZLEFT" | "BITZRIGHT"
+    (t = "BITZLEFT" | t = "BITZRIGHT")
+    {return t.image;}
 }
 
-void parseAddop(): {
+String parseAddop(): {
+    Token t;
 }{
-    "UP" | "NERF"
+    (t = "UP" | t = "NERF")
+    {return t.image;}
 }
 
-void parseMulop(): {
+String parseMulop(): {
+    Token t;
 }{
-    "TIEMZ" | "OVR" | "LEFTOVR"
+    (t = "TIEMZ" | t = "OVR" | t = "LEFTOVR")
+    {return t.image;}
 }
 
-void parsePrefixop(): {
+String parsePrefixop(): {
+    Token t;
 }{
-    "NAA" | "BITZFLIP" | "SIEZ" "UV" | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR"
+    (
+        t = "NAA"
+    |   t = "BITZFLIP"
+    |   t = "SIEZ" "UV"
+    |   t = "B00LZOR"
+    |   t = "INTZOR"
+    |   t = "NUMZOR"
+    |   t = "KARZOR"
+    |   t = "YARNZOR"
+    )
+    {return t.image;}
 }

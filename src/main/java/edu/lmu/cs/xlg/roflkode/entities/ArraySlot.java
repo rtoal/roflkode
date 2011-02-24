@@ -1,6 +1,10 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
-public class SubscriptedVariable extends VariableExpression {
+/**
+ * A Roflkode variable of the form a!!e where a is an array and e is an expression evaluating
+ * to an index position within the array.
+ */
+public class ArraySlot extends VariableExpression {
 
     private VariableExpression array;
     private Expression index;
@@ -8,7 +12,7 @@ public class SubscriptedVariable extends VariableExpression {
     /**
      * Creates a subscripted variable.
      */
-    public SubscriptedVariable(VariableExpression v, Expression i) {
+    public ArraySlot(VariableExpression v, Expression i) {
         this.array = v;
         this.index = i;
     }
