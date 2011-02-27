@@ -3,7 +3,7 @@ package edu.lmu.cs.xlg.roflkode.entities;
 /**
  * A Roflkode assignment statement.
  */
-public class AssignmentStatement extends Expression {
+public class AssignmentStatement extends Statement {
 
     private VariableExpression left;
     private Expression right;

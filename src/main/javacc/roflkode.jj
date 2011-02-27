@@ -55,9 +55,9 @@ TOKEN: {
     | "OUTTA" | "PWNED" | "AWSUM" | "UPPIN" | "NERFIN" | "DIVIDZ" | "BITZLEFT"
     | "BITZRIGHT" | "TIEMZ" | "OVR" | "LEFTOVR" | "NAA" | "BITZFLIP" | "SIEZ"
     | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR" | "BITOR" | "BITAND"
-    | "BITXOR" | "CATN8" | "ORELSE" | "ANALSO"
+    | "BITXOR" | "ORELSE" | "ANALSO"
 |
-    "?" | "!!" | "!!!" | "<:" | ":>" | "[:" | ":]"
+    "?" | "!!" | "!!!" | "~~" | "<:" | ":>" | "[:" | ":]" | "(:" | ":)"
 |
     < BR: "," | "\n" | "\r" | "\u0085" | "\u2028" | "\u2029" >
 |
@@ -195,21 +195,25 @@ void parseParams(): {
 Statement parseSimpleStmt(): {
     List<Expression> expressions = new ArrayList<Expression>();
     Expression e;
+    VariableExpression v;
+    Token t;
 }{
-    "YO" (e = parseExp() {expressions.add(e);})+
+    "YO" (e = parseExp()  {expressions.add(e);})+
     {return new YoStatement(expressions);}
     |
-    "FACEPALM" (parseExp())+ {return /* TODO */ null;}
+    "FACEPALM" (e = parseExp()  {expressions.add(e);})+
+    {return new FacepalmStatement(expressions);}
     |
-    "PWNZOR" <ID> {return /* TODO */ null;}
+    "PWNZOR" v = parseVar()
+    {return new PwnzorStatement(v);}
     |
-    "UPZORZ" <ID> {return /* TODO */ null;}
+    "UPZORZ" v = parseVar()
+    {return new UpzorzStatement(v);}
     |
-    "NERFZORZ" <ID> {return /* TODO */ null;}
+    "NERFZORZ" v = parseVar()
+    {return new NerfzorzStatement(v);}
     |
-    LOOKAHEAD(parseVar() "R") parseVar() "R" parseExp() {return /* TODO */ null;}
-    |
-    "GTFO" (<ID>)? {return /* TODO */ null;}
+    "GTFO" (t = <ID>)? {return /* TODO */ null;}
     |
     "HWGA" (<ID>)? {return /* TODO */ null;}
     |
@@ -217,11 +221,15 @@ Statement parseSimpleStmt(): {
     |
     "DIAF" (parseExp())? {return /* TODO */ null;}
     |
-    "GIMMEH" (<ID>) {return /* TODO */ null;}
+    "GIMMEH" (<ID>)+ {return /* TODO */ null;}
     |
     "BRB" (parseExp()) {return /* TODO */ null;}
     |
-    <ID> (parseExp())* {return /* TODO */ null;}
+    LOOKAHEAD (parseVar() "R") v = parseVar() "R" e = parseExp()
+    {return new AssignmentStatement(v, e);}
+    |
+    t = <ID> expressions = parseArgs()
+    {return new CallStatement(t.image, expressions);}
 }
 
 void parseModifier(): {
@@ -435,16 +443,13 @@ Expression parseExp10(): {
 }{
     e = parseLiteral() {return e;}
 |
-    LOOKAHEAD(2) t = <ID> "<:" (e = parseExp() {list.add(e);})* ":>"
+    LOOKAHEAD(2) t = <ID> "<:" (e = parseExp()  {list.add(e);})* ":>"
     {return new BukkitExpression(t.image, list);}
 |
     e = parseVar() {return e;}
 |
-    "[:" (e = parseExp() {list.add(e);})* ":]"
+    "[:" (e = parseExp()  {list.add(e);})* ":]"
     {return new ArrayExpression(list);}
-|
-    "CATN8" (e = parseExp() {list.add(e);})+
-    {return new CatenateExpression(list);}
 |
     "(" e = parseExp() ")" {return e;}
 }
@@ -475,22 +480,30 @@ VariableExpression parseVar(): {
     Token p;
 }{
     t = <ID>
-    (e = parseExp() {arguments.add(e);})*
+    (arguments = parseArgs())?
     {
         if (arguments.isEmpty()) {
             v = new SimpleVariableReference(t.image);
         } else {
             v = new CallExpression(t.image, arguments);
         }
-    }
+   }
     (
-        "!!" e = parseExp()
+        "!!" e = parseExp() "!!"
         {v = new ArraySlot(v, e);}
     |
         "!!!" p = <ID>
         {v = new BukkitSlot(v, p.image);}
     )*
     {return v;}
+}
+
+List<Expression> parseArgs(): {
+    List<Expression> arguments = new ArrayList<Expression>();
+    Expression e;
+}{
+    "(:" (e = parseExp()  {arguments.add(e);})* ":)"
+    {return arguments;}
 }
 
 String parseRelop(): {
@@ -521,6 +534,8 @@ String parseAddop(): {
     t = "UP" {return "+";}
 |
     t = "NERF" {return "-";}
+|
+    t = "~~" {return "~~";}
 }
 
 String parseMulop(): {

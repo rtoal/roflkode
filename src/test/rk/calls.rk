@@ -1,4 +1,4 @@
 HAI
 BTW a function call should eat up all the tokens
-F 7 9 G 8 P R 4
+p (: 7 :)
 KTHXBYE
