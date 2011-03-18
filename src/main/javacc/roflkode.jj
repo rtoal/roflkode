@@ -217,7 +217,8 @@ Statement parseSimpleStmt(): {
     |
     "HWGA" (<ID>)? {return /* TODO */ null;}
     |
-    "HEREZ" "UR" parseExp() {return /* TODO */ null;}
+    "HEREZ" "UR" e = parseExp()
+    {return new HerezStatement(e);}
     |
     "DIAF" (parseExp())? {return /* TODO */ null;}
     |

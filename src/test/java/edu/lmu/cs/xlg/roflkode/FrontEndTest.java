@@ -2,12 +2,10 @@ package edu.lmu.cs.xlg.roflkode;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.junit.Test;
