@@ -159,22 +159,53 @@ void parseDec(): {
     parseTypedec()
 }
 
-void parseVardec(): {
+Variable parseVardec(): {
+    String t;
+    Token v;
+    Expression e = null;
 }{
-    "I" "HAS" "A" parseType() <ID>
-    ("ITZ" ("4EVER")? parseExp())?
+    "I" "HAS" "A" t = parseType() v = <ID> ("ITZ" ("4EVER")? e = parseExp())?
+    {return new Variable(v.image, t, e);}
 }
 
-void parseType(): {
+String parseType(): {
+    Token i;
+    StringBuilder builder = new StringBuilder();
 }{
-    "B00L" | "KAR" | "INT" | "NUMBR" | "YARN" | <ID>
+    (
+        i = "B00L"
+    |
+        i = "KAR"
+    |
+        i = "INT"
+    |
+        i = "NUMBR"
+    |
+        i = "YARN"
+    |
+        i = <ID>
+    )
+    {builder.append(i.image);}
+    (
+        LOOKAHEAD(2) "LIST" {builder.append(" LIST");}
+    )*
+    {return builder.toString();}
 }
 
-void parseTypedec(): {
+Type parseTypedec(): {
+    Token b;
+    String t;
+    Token p;
+    List<BukkitType.Property> properties = new ArrayList<BukkitType.Property>();
 }{
     "TEH" "BUKKIT" "UV" (<BR>)*
-    (parseType() <ID> (<BR>)*)*
-    "AKA" <ID>
+    (
+        t = parseType()
+        p = <ID>
+        {properties.add(new BukkitType.Property(p.image, t));} (<BR>)*
+    )*
+    "AKA" b = <ID>
+    {return new BukkitType(b.image, properties);}
 }
 
 void parseFundec(): {
@@ -194,9 +225,9 @@ void parseParams(): {
 
 Statement parseSimpleStmt(): {
     List<Expression> expressions = new ArrayList<Expression>();
-    Expression e;
-    VariableExpression v;
-    Token t;
+    Expression e = null;
+    VariableExpression v = null;
+    Token t = null;
 }{
     "YO" (e = parseExp()  {expressions.add(e);})+
     {return new YoStatement(expressions);}
@@ -215,16 +246,19 @@ Statement parseSimpleStmt(): {
     |
     "GTFO" (t = <ID>)? {return /* TODO */ null;}
     |
-    "HWGA" (<ID>)? {return /* TODO */ null;}
+    "HWGA" (t = <ID>)?
+    {return new AgainStatement(t == null ? null : t.image);}
     |
     "HEREZ" "UR" e = parseExp()
     {return new HerezStatement(e);}
     |
-    "DIAF" (parseExp())? {return /* TODO */ null;}
+    "DIAF" (e = parseExp())?
+    {return new DiafStatement(e);}
     |
-    "GIMMEH" (<ID>)+ {return /* TODO */ null;}
+    "GIMMEH" (<ID>) {return /* TODO */ null;}
     |
-    "BRB" (parseExp()) {return /* TODO */ null;}
+    "BRB" (e = parseExp())
+    {return new BrbStatement(e);}
     |
     LOOKAHEAD (parseVar() "R") v = parseVar() "R" e = parseExp()
     {return new AssignmentStatement(v, e);}
@@ -484,17 +518,17 @@ VariableExpression parseVar(): {
     (arguments = parseArgs())?
     {
         if (arguments.isEmpty()) {
-            v = new SimpleVariableReference(t.image);
+            v = new SimpleVariableExpression(t.image);
         } else {
             v = new CallExpression(t.image, arguments);
         }
    }
     (
         "!!" e = parseExp() "!!"
-        {v = new ArraySlot(v, e);}
+        {v = new ArraySlotVariableExpression(v, e);}
     |
         "!!!" p = <ID>
-        {v = new BukkitSlot(v, p.image);}
+        {v = new BukkitSlotVariableExpression(v, p.image);}
     )*
     {return v;}
 }

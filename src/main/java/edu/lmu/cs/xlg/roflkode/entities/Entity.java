@@ -29,13 +29,14 @@ import java.util.Set;
  *       BukkitType
  *    Function
  *    Statement
- *       Declaration
- *       IncrementStatement
+ *       DeclarationStatement
+ *       UpzorzStatement
+ *       NerfzorzStatement
  *       CallStatement
  *       AssignmentStatement
  *       BreakStatement
  *       AgainStatement
- *       ReturnStatement
+ *       HerezStatement
  *       YoStatement
  *       FacepalmStatement
  *       IfStatement
@@ -50,9 +51,9 @@ import java.util.Set;
  *          CharacterLiteral
  *          StringLiteral
  *       VariableExpression
- *          SimpleVariableReference
- *          ArraySlot
- *          BukkitSlot
+ *          SimpleVariableExpression
+ *          ArraySlotVariableExpression
+ *          BukkitSlotVariableExpression
  *          Application
  *       UnaryExpression
  *       BinaryExpression

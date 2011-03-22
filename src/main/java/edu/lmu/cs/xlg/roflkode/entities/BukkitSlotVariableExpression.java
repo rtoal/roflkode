@@ -1,9 +1,9 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
 /**
- * A Roflkode variable of the form v!!!p for variable v and property p.
+ * A Roflkode variable of the form v!!!p for bukkit variable expression v and property p.
  */
-public class BukkitSlot extends VariableExpression {
+public class BukkitSlotVariableExpression extends VariableExpression {
 
     private VariableExpression bukkit;
     private String propertyName;
@@ -11,7 +11,7 @@ public class BukkitSlot extends VariableExpression {
     /**
      * Creates a variable.
      */
-    public BukkitSlot(VariableExpression bukkit, String propertyName) {
+    public BukkitSlotVariableExpression(VariableExpression bukkit, String propertyName) {
         this.bukkit = bukkit;
         this.propertyName = propertyName;
     }
