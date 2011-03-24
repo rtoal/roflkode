@@ -51,7 +51,7 @@ TOKEN: {
     | "NERFZORZ" | "IF" | "CEPT" | "TIL" | "WHIEL" | "NO" | "OIC" | "WTF"
     | "OMG" | "WAI" | "WERD" | "MEBBE" | "OMGWTF" | "O" | "IM" | "IN" | "TO"
     | "UP" | "OR" | "AS" | "BY" | "WIN" | "THX" | "PLZ" | "N00B" | "NERF"
-    | "FAIL" | "FROM" | "SAEM" | "NOES" | "PWNS" | "THRU" | "MKAY"
+    | "FAIL" | "FROM" | "SAEM" | "NOES" | "PWNS" | "THRU" | "MKAY" | "LIST"
     | "OUTTA" | "PWNED" | "AWSUM" | "UPPIN" | "NERFIN" | "DIVIDZ" | "BITZLEFT"
     | "BITZRIGHT" | "TIEMZ" | "OVR" | "LEFTOVR" | "NAA" | "BITZFLIP" | "SIEZ"
     | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR" | "BITOR" | "BITAND"
@@ -150,13 +150,17 @@ Statement parseStmt(): {
     {return s;}
 }
 
-void parseDec(): {
+Entity parseDec(): {
+    Entity e;
 }{
-    LOOKAHEAD(2) parseVardec()
+    (
+        LOOKAHEAD(2) e = parseVardec()
     |
-    parseFundec()
+        e = parseFundec()
     |
-    parseTypedec()
+        e = parseTypedec()
+    )
+    {return e;}
 }
 
 Variable parseVardec(): {
@@ -208,19 +212,43 @@ Type parseTypedec(): {
     {return new BukkitType(b.image, properties);}
 }
 
-void parseFundec(): {
+Function parseFundec(): {
+    String r = null;
+    Token n;
+    String t;
+    Token p;
+    List<Variable> params = new ArrayList<Variable>();
+    Block body = null;
 }{
-    "I" "CAN" ("MAEK" parseType())?
-    <ID> (parseParams())? (<BR>)+ (parseStmt())+
-    "SRSLY"
+    (
+        "I" "CAN" ("MAEK" r = parseType())?
+        n = <ID> (parseParams(params))? (<BR>)+
+        body = parseBlock()
+        "SRSLY"
     |
-    "THEM" "CAN" ("MAEK" parseType())? <ID> (parseParams())?
+        "THEM" "CAN" ("MAEK" r = parseType())? n = <ID> (parseParams(params))?
+    )
+    {return new Function(r, n.image, params, body);}
 }
 
-void parseParams(): {
+void parseParams(List<Variable> params): {
+    String t;
+    Token p;
 }{
-    ("WIF")? "UR" parseType() <ID>
-    ("AN" parseType() <ID>)*
+    ("WIF")? "UR" t = parseType() p = <ID>
+    {params.add(new Variable(p.image, t, null));}
+    (
+        "AN" t = parseType() p = <ID>
+        {params.add(new Variable(p.image, t, null));}
+    )*
+}
+
+Block parseBlock(): {
+    List<Statement> statements = new ArrayList<Statement>();
+    Statement s;
+}{
+    ( s = parseStmt() {statements.add(s);} )*
+    {return new Block(statements);}
 }
 
 Statement parseSimpleStmt(): {
