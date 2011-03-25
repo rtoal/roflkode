@@ -57,7 +57,7 @@ TOKEN: {
     | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR" | "BITOR" | "BITAND"
     | "BITXOR" | "ORELSE" | "ANALSO"
 |
-    "?" | "!!" | "!!!" | "~~" | "<:" | ":>" | "[:" | ":]" | "(:" | ":)"
+    "?" | "(" | ")" | "!?" | "?!" | "!!!" | "~~" | "<:" | ":>" | "[:" | ":]" | "(:" | ":)"
 |
     < BR: "," | "\n" | "\r" | "\u0085" | "\u2028" | "\u2029" >
 |
@@ -164,11 +164,14 @@ Entity parseDec(): {
 }
 
 Variable parseVardec(): {
-    String t;
-    Token v;
+    String t = null;
+    Token v = null;
     Expression e = null;
 }{
-    "I" "HAS" "A" t = parseType() v = <ID> ("ITZ" ("4EVER")? e = parseExp())?
+    "I" "HAS" "A"
+    (LOOKAHEAD (parseType() <ID>) t = parseType())?
+    v = <ID>
+    ("ITZ" ("4EVER")? e = parseExp())?
     {return new Variable(v.image, t, e);}
 }
 
@@ -552,7 +555,7 @@ VariableExpression parseVar(): {
         }
    }
     (
-        "!!" e = parseExp() "!!"
+        "!?" e = parseExp() "?!"
         {v = new ArraySlotVariableExpression(v, e);}
     |
         "!!!" p = <ID>
