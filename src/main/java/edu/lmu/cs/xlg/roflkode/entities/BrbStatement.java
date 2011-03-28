@@ -1,5 +1,7 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
+import edu.lmu.cs.xlg.util.Log;
+
 /**
  * A Roflkode BRB statement.
  */
@@ -13,5 +15,11 @@ public class BrbStatement extends Statement {
 
     public Expression getExpression() {
         return expression;
+    }
+
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        expression.analyze(log, table);
+        expression.assertArithmetic("BRB", log);
     }
 }

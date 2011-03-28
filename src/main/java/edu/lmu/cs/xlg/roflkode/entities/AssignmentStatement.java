@@ -1,5 +1,7 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
+import edu.lmu.cs.xlg.util.Log;
+
 /**
  * A Roflkode assignment statement.
  */
@@ -28,5 +30,16 @@ public class AssignmentStatement extends Statement {
      */
     public Expression getRight() {
         return right;
+    }
+
+    /**
+     * Analyzes the statement, ensuring that the target variable is writable and the right hand side
+     * is type compatible with the type of the variable.
+     */
+    public void analyze(Log log, SymbolTable table, Function f, boolean inLoop) {
+        left.analyze(log, table);
+        right.analyze(log, table);
+        left.assertWritable(log);
+        right.assertAssignableTo(left.type, log, "assignment_type_error");
     }
 }

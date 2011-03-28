@@ -1,5 +1,7 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
+import edu.lmu.cs.xlg.util.Log;
+
 /**
  * A simple typsafe enum of the two boolean literals, WIN and FAIL.
  */
@@ -14,5 +16,12 @@ public class BooleanLiteral extends Literal {
      */
     private BooleanLiteral(String lexeme) {
         super(lexeme);
+    }
+
+    /**
+     * Does nothing, since analysis always succeeds.
+     */
+    public void analyze(Log log, SymbolTable table) {
+        this.type = Type.N00B_TYPE;
     }
 }

@@ -1,5 +1,7 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
+import edu.lmu.cs.xlg.util.Log;
+
 public class DiafStatement extends Statement {
 
     private Expression expression;
@@ -10,5 +12,11 @@ public class DiafStatement extends Statement {
 
     public Expression getExpression() {
         return expression;
+    }
+
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        expression.analyze(log, table);
+        expression.assertString("DIAF", log);
     }
 }

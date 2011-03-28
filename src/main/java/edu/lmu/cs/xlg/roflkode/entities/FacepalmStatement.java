@@ -2,6 +2,8 @@ package edu.lmu.cs.xlg.roflkode.entities;
 
 import java.util.List;
 
+import edu.lmu.cs.xlg.util.Log;
+
 /**
  * A Roflkode facepalm statement.
  */
@@ -21,5 +23,14 @@ public class FacepalmStatement extends Statement {
      */
     public List<Expression> getExpressions() {
         return expressions;
+    }
+
+    /**
+     * Analyzes the statement.
+     */
+    public void analyze(Log log, SymbolTable table, Function owner, boolean inLoop) {
+        for (Expression a: expressions) {
+            a.analyze(log, table);
+        }
     }
 }

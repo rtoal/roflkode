@@ -4,6 +4,7 @@ package edu.lmu.cs.xlg.roflkode.entities;
  * Abstract superclass for all literals.
  */
 public abstract class Literal extends Expression {
+
     private String lexeme;
 
     /**

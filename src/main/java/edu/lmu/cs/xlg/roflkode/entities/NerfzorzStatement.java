@@ -1,5 +1,7 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
+import edu.lmu.cs.xlg.util.Log;
+
 /**
  * The statement of the form 'NERFZORZ v' for variable v.
  */
@@ -19,5 +21,11 @@ public class NerfzorzStatement extends Statement {
      */
     public VariableExpression getTarget() {
         return target;
+    }
+
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        target.analyze(log, table);
+        target.assertInteger("NERFZORZ", log);
     }
 }

@@ -132,35 +132,37 @@ Script parseScript(): {
 void parseImport(): {
 }{
     "CAN" "HAS" <ID> "?" (<BR>)+
+    { /* TODO: Do a compilation of the library file <ID>.rk */ }
 }
 
 Statement parseStmt(): {
     Statement s;
 }{
     (
-        parseDec() {s = null; /* TODO */}
+        s = parseDec() (<BR>)+
     |
-        LOOKAHEAD ("PLZ" | "IM" | parseExp() ("?" | "WTF")) parseComplexStmt()
-        {s = null; /* TODO */}
+        LOOKAHEAD ("PLZ" | "IM" | parseExp() ("?" | "WTF")) s = parseComplexStmt()
+        (<BR>)+
     |
         s = parseSimpleStmt()
-        (parseModifier())?   /* TODO */
+        (parseModifier())?
+        (<BR>)+
+        // TODO - create a modified statement here....
     )
-    (<BR>)+
     {return s;}
 }
 
-Entity parseDec(): {
-    Entity e;
+Statement parseDec(): {
+    Statement s;
 }{
     (
-        LOOKAHEAD(2) e = parseVardec()
+        LOOKAHEAD(2) s = parseVardec()
     |
-        e = parseFundec()
+        s = parseFundec()
     |
-        e = parseTypedec()
+        s = parseTypedec()
     )
-    {return e;}
+    {return s;}
 }
 
 Variable parseVardec(): {
@@ -266,9 +268,6 @@ Statement parseSimpleStmt(): {
     "FACEPALM" (e = parseExp()  {expressions.add(e);})+
     {return new FacepalmStatement(expressions);}
     |
-    "PWNZOR" v = parseVar()
-    {return new PwnzorStatement(v);}
-    |
     "UPZORZ" v = parseVar()
     {return new UpzorzStatement(v);}
     |
@@ -312,15 +311,19 @@ void parseModifier(): {
     parseExp()
 }
 
-void parseComplexStmt(): {
+Statement parseComplexStmt(): {
 }{
     LOOKAHEAD(parseExp() "?") parseConditional()
+    {return null; /* TODO */}
     |
     parseSwitch()
+    {return null; /* TODO */}
     |
     parseLoop()
+    {return null; /* TODO */}
     |
     parseTry()
+    {return null; /* TODO */}
 }
 
 void parseConditional(): {
@@ -556,10 +559,10 @@ VariableExpression parseVar(): {
    }
     (
         "!?" e = parseExp() "?!"
-        {v = new ArraySlotVariableExpression(v, e);}
+        {v = new IndexVariableExpression(v, e);}
     |
         "!!!" p = <ID>
-        {v = new BukkitSlotVariableExpression(v, p.image);}
+        {v = new PropertyVariableExpression(v, p.image);}
     )*
     {return v;}
 }

@@ -1,6 +1,9 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
+import java.util.Iterator;
 import java.util.List;
+
+import edu.lmu.cs.xlg.util.Log;
 
 /**
  * A expression directly constructing a new instance of a bukkit type. Examples:
@@ -35,5 +38,32 @@ public class BukkitExpression extends Expression {
      */
     public List<Expression> getArgs() {
         return args;
+    }
+
+    /**
+     * Analyzes the bukkit constructor expression.
+     */
+    public void analyze(Log log, SymbolTable table) {
+        type = table.lookupType(typename, log);
+        if (! (type instanceof BukkitType)) {
+            log.error("illegal_bukkit_type", type.getName());
+            return;
+        }
+
+        List<BukkitType.Property> properties = BukkitType.class.cast(type).getProperties();
+
+        if (args.size() != properties.size()) {
+            log.error("wrong_number_of_properties", type.getName(), properties.size(), args.size());
+            return;
+        }
+
+        Iterator<Expression> ai = args.iterator();
+        Iterator<BukkitType.Property> fi = properties.iterator();
+        while (ai.hasNext()) {
+            Expression a = ai.next();
+            BukkitType.Property f = fi.next();
+            a.analyze(log, table);
+            a.assertAssignableTo(f.getType(), log, "property_type_error");
+        }
     }
 }
