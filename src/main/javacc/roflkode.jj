@@ -315,36 +315,44 @@ Statement parseSimpleStmt(): {
 }
 
 Statement parseComplexStmt(): {
+    Statement s;
 }{
-    LOOKAHEAD(parseExp() "?") parseConditional()
-    {return null; /* TODO */}
+    (
+        LOOKAHEAD(parseExp() "?") s = parseConditional()
     |
-    parseSwitch()
-    {return null; /* TODO */}
+        s = parseSwitch()
     |
-    parseLoop()
-    {return null; /* TODO */}
+        s = parseLoop()
     |
-    parseTry()
-    {return null; /* TODO */}
+        s = parseTry()
+    )
+    {return s;}
 }
 
-void parseConditional(): {
+Statement parseConditional(): {
+    ConditionalStatement.Arm arm;
+    List<ConditionalStatement.Arm> arms = new ArrayList<ConditionalStatement.Arm>();
+    Expression e;
+    Block b;
+    Block elseBlock = null;
 }{
-    parseExp() "?" (<BR>)+
-    "WERD" (<BR>)+ (parseStmt())+
+    e = parseExp() "?" (<BR>)+
+    "WERD" (<BR>)+ b = parseBlock()
+    {arms.add(new ConditionalStatement.Arm(e, b));}
     (
-        "MEBBE" parseExp() (<BR>)*
-        (parseStmt())+
+        "MEBBE" e = parseExp() (<BR>)*
+        b = parseBlock()
+        {arms.add(new ConditionalStatement.Arm(e, b));}
     )*
     (
         "NO" "WAI" (<BR>)*
-        (parseStmt())+
+        elseBlock = parseBlock()
     )?
     "OIC"
+    {return new ConditionalStatement(arms, elseBlock);}
 }
 
-void parseSwitch(): {
+Statement parseSwitch(): {
 }{
     parseExp() "WTF" "?" (<BR>)+
     (
@@ -353,14 +361,16 @@ void parseSwitch(): {
     "OMGWTF" (<BR>)+
     (parseStmt())+
     "OIC"
+    {return null; /* TODO */}
 }
 
-void parseLoop(): {
+Statement parseLoop(): {
 }{
     parseLoopStart() (<BR>)*
     parseLoopControl() (<BR>)+
     (LOOKAHEAD(2) parseStmt())+
     parseLoopEnd()
+    {return null; /* TODO */}
 }
 
 void parseLoopStart(): {
@@ -386,15 +396,19 @@ void parseLoopEnd(): {
     "IM" "OUTTA" "UR" <ID>
 }
 
-void parseTry(): {
+Statement parseTry(): {
+    Statement statementToTry;
+    Block success;
+    Block fail;
 }{
-    "PLZ" parseSimpleStmt()
+    "PLZ" statementToTry = parseSimpleStmt()
     (<BR>)+
     "AWSUM" "THX" (<BR>)+
-    (parseStmt())+
+    success = parseBlock()
     "O" "NOES" (<BR>)+
-    (parseStmt())+
+    fail = parseBlock()
     "MKAY"
+    {return new TryStatement(statementToTry, success, fail);}
 }
 
 Expression parseExp(): {
