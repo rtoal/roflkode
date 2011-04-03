@@ -139,16 +139,13 @@ Statement parseStmt(): {
     Statement s;
 }{
     (
-        s = parseDec() (<BR>)+
+        s = parseDec()
     |
         LOOKAHEAD ("PLZ" | "IM" | parseExp() ("?" | "WTF")) s = parseComplexStmt()
-        (<BR>)+
     |
         s = parseSimpleStmt()
-        (parseModifier())?
-        (<BR>)+
-        // TODO - create a modified statement here....
     )
+    (<BR>)+
     {return s;}
 }
 
@@ -257,58 +254,64 @@ Block parseBlock(): {
 }
 
 Statement parseSimpleStmt(): {
+    Statement s = null;
     List<Expression> expressions = new ArrayList<Expression>();
     Expression e = null;
     VariableExpression v = null;
     Token t = null;
-}{
-    "YO" (e = parseExp()  {expressions.add(e);})+
-    {return new YoStatement(expressions);}
-    |
-    "FACEPALM" (e = parseExp()  {expressions.add(e);})+
-    {return new FacepalmStatement(expressions);}
-    |
-    "UPZORZ" v = parseVar()
-    {return new UpzorzStatement(v);}
-    |
-    "NERFZORZ" v = parseVar()
-    {return new NerfzorzStatement(v);}
-    |
-    "GTFO" (t = <ID>)? {return /* TODO */ null;}
-    |
-    "HWGA" (t = <ID>)?
-    {return new AgainStatement(t == null ? null : t.image);}
-    |
-    "HEREZ" "UR" e = parseExp()
-    {return new HerezStatement(e);}
-    |
-    "DIAF" (e = parseExp())?
-    {return new DiafStatement(e);}
-    |
-    "GIMMEH" (<ID>) {return /* TODO */ null;}
-    |
-    "BRB" (e = parseExp())
-    {return new BrbStatement(e);}
-    |
-    LOOKAHEAD (parseVar() "R") v = parseVar() "R" e = parseExp()
-    {return new AssignmentStatement(v, e);}
-    |
-    t = <ID> expressions = parseArgs()
-    {return new CallStatement(t.image, expressions);}
-}
-
-void parseModifier(): {
+    ModifiedSimpleStatement.Modifier m = null;
+    Expression condition = null;
 }{
     (
-        "IF"
+        "YO" (e = parseExp()  {expressions.add(e);})+
+        {s = new YoStatement(expressions);}
     |
-        "CEPT" "IF"
+        "FACEPALM" (e = parseExp()  {expressions.add(e);})+
+        {s = new FacepalmStatement(expressions);}
     |
-        "WHIEL"
+        "UPZORZ" v = parseVar()
+        {s = new UpzorzStatement(v);}
     |
-        "TIL"
+        "NERFZORZ" v = parseVar()
+        {s = new NerfzorzStatement(v);}
+    |
+        "GTFO" (t = <ID>)?
+        {s = new GtfoStatement(t == null ? null : t.image);}
+    |
+        "HWGA" (t = <ID>)?
+        {s = new AgainStatement(t == null ? null : t.image);}
+    |
+        "HEREZ" "UR" e = parseExp()
+        {s = new HerezStatement(e);}
+    |
+        "DIAF" (e = parseExp())?
+        {s = new DiafStatement(e);}
+    |
+        "GIMMEH" v = parseVar()
+        {s = new GimmehStatement(v);}
+    |
+        "BRB" (e = parseExp())
+        {s = new BrbStatement(e);}
+    |
+        LOOKAHEAD (parseVar() "R") v = parseVar() "R" e = parseExp()
+        {s = new AssignmentStatement(v, e);}
+    |
+        t = <ID> expressions = parseArgs()
+        {s = new CallStatement(t.image, expressions);}
     )
-    parseExp()
+    (
+        (
+            "IF" {m = ModifiedSimpleStatement.Modifier.IF;}
+        |
+            "CEPT" "IF" {m = ModifiedSimpleStatement.Modifier.CEPT;}
+        |
+            "WHIEL" {m = ModifiedSimpleStatement.Modifier.WHIEL;}
+        |
+            "TIL" {m = ModifiedSimpleStatement.Modifier.TIL;}
+        )
+        condition = parseExp()
+    )?
+    {return m == null ? s : new ModifiedSimpleStatement(m, condition, s);}
 }
 
 Statement parseComplexStmt(): {
@@ -467,7 +470,6 @@ Expression parseExp6(): {
     {return e1;}
 }
 
-
 Expression parseExp7(): {
     String op;
     Expression e1;
@@ -495,7 +497,6 @@ Expression parseExp8(): {
     )*
     {return e1;}
 }
-
 
 Expression parseExp9(): {
     String op = null;
@@ -601,9 +602,9 @@ String parseAddop(): {
     Token t;
 }{
     t = "UP" {return "+";}
-|
+    |
     t = "NERF" {return "-";}
-|
+    |
     t = "~~" {return "~~";}
 }
 

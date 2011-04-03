@@ -2,7 +2,6 @@ package edu.lmu.cs.xlg.roflkode.entities;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -113,6 +112,11 @@ public class SymbolTable {
             log.error("not_a_function", name);
             return null;
         }
+    }
+
+    public LoopStatement lookupLoop(String loopName, Log log) {
+        // TODO
+        return null;
     }
 
     /**

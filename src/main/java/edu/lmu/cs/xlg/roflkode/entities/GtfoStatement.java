@@ -3,15 +3,15 @@ package edu.lmu.cs.xlg.roflkode.entities;
 import edu.lmu.cs.xlg.util.Log;
 
 /**
- * A Roflkode HWGA statement.  This is like a "continue" statement in many popular languages.
+ * A Roflkode GTFO statement.  This is like a "break" statement in many popular languages.
  * In Roflkode, the statement may have an optional loop name operand.
  */
-public class AgainStatement extends Statement {
+public class GtfoStatement extends Statement {
 
     private String loopName;
     private LoopStatement loop;
 
-    public AgainStatement(String loopName) {
+    public GtfoStatement(String loopName) {
         this.loopName = loopName;
     }
 
@@ -23,10 +23,9 @@ public class AgainStatement extends Statement {
         return loop;
     }
 
-    @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         if (!inLoop) {
-            log.error("hwga_not_in_loop");
+            log.error("gtfo_not_in_loop");
         }
         if (loopName != null) {
             loop = table.lookupLoop(loopName, log);
