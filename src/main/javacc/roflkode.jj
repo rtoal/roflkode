@@ -52,7 +52,7 @@ TOKEN: {
     | "OMG" | "WAI" | "WERD" | "MEBBE" | "OMGWTF" | "O" | "IM" | "IN" | "TO"
     | "UP" | "OR" | "AS" | "BY" | "WIN" | "THX" | "PLZ" | "N00B" | "NERF"
     | "FAIL" | "FROM" | "SAEM" | "NOES" | "PWNS" | "THRU" | "MKAY" | "LIST"
-    | "OUTTA" | "PWNED" | "AWSUM" | "UPPIN" | "NERFIN" | "DIVIDZ" | "BITZLEFT"
+    | "LOL" | "PWNED" | "AWSUM" | "UPPIN" | "NERFIN" | "DIVIDZ" | "BITZLEFT"
     | "BITZRIGHT" | "TIEMZ" | "OVR" | "LEFTOVR" | "NAA" | "BITZFLIP" | "SIEZ"
     | "B00LZOR" | "INTZOR" | "NUMZOR" | "KARZOR" | "YARNZOR" | "BITOR" | "BITAND"
     | "BITXOR" | "ORELSE" | "ANALSO"
@@ -353,47 +353,49 @@ Statement parseConditional(): {
 }
 
 Statement parseSwitch(): {
+    Expression e;
+    SwitchStatement.Arm arm;
+    List<SwitchStatement.Arm> arms = new ArrayList<SwitchStatement.Arm>();
+    Literal literal;
+    Block block;
+    Block elseBlock = null;
 }{
-    parseExp() "WTF" "?" (<BR>)+
+    e = parseExp() "WTF" "?" (<BR>)+
     (
-        "OMG" parseLiteral() (<BR>)+ (parseStmt())+
+        "OMG" literal = parseLiteral() (<BR>)+ block = parseBlock()
+        {arms.add(new SwitchStatement.Arm(literal, block));}
     )+
     "OMGWTF" (<BR>)+
-    (parseStmt())+
+    elseBlock = parseBlock()
     "OIC"
-    {return null; /* TODO */}
+    {return new SwitchStatement(e, arms, elseBlock);}
 }
 
 Statement parseLoop(): {
+    Token t = null;
+    String name = null;
+    String loopType;
+    Expression condition = null;
+    String iterator = null;
+    Expression start = null;
+    Expression end = null;
+    Expression collection = null;
+    Block body;
 }{
-    parseLoopStart() (<BR>)*
-    parseLoopControl() (<BR>)+
-    (LOOKAHEAD(2) parseStmt())+
-    parseLoopEnd()
-    {return null; /* TODO */}
-}
-
-void parseLoopStart(): {
-}{
-    "IM" "IN" "UR" <ID>
-}
-
-void parseLoopControl(): {
-}{
-    ("WHIEL" | "TIL") parseExp()
+    "IM" "IN" "UR" t = <ID> {name = t.image;} (<BR>)*
+    (t = "WHIEL" | t = "TIL") {loopType = t.image;} condition = parseExp()
     |
-    ("UPPIN" | "NERFIN")
-    <ID>
+    (t = "UPPIN" | t = "NERFIN") {loopType = t.image;}
+    t = <ID> {iterator = t.image;}
     (
-        "FROM" parseExp() "TO" parseExp()
+        "FROM" start = parseExp() "TO" end = parseExp()
     |
-        "THRU" parseExp()
+        "THRU" collection = parseExp()
     )
-}
-
-void parseLoopEnd(): {
-}{
-    "IM" "OUTTA" "UR" <ID>
+    (<BR>)+
+    LOOKAHEAD(2) body = parseBlock()
+    "LOL"
+    {return new LoopStatement(name, loopType, condition, iterator, start, end, collection, body);}
 }
 
 Statement parseTry(): {
@@ -571,7 +573,7 @@ VariableExpression parseVar(): {
         } else {
             v = new CallExpression(t.image, arguments);
         }
-   }
+    }
     (
         "!?" e = parseExp() "?!"
         {v = new IndexVariableExpression(v, e);}
