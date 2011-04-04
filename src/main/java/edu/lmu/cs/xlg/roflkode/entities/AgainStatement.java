@@ -19,6 +19,11 @@ public class AgainStatement extends Statement {
         return loopName;
     }
 
+    /**
+     * Returns the loop statement that this statement is trying to continue.  This is not
+     * known during syntax checking or AST generation.  It is only computed during semantic
+     * analysis, where we look up the name.
+     */
     public LoopStatement getLoop() {
         return loop;
     }
@@ -26,7 +31,7 @@ public class AgainStatement extends Statement {
     @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         if (!inLoop) {
-            log.error("hwga_not_in_loop");
+            log.error("hwga.not.in.loop");
         }
         if (loopName != null) {
             loop = table.lookupLoop(loopName, log);

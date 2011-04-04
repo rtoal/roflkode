@@ -49,7 +49,7 @@ public class SymbolTable {
         Object value = map.get(name);
         if (value == null) {
             if (parent == null) {
-                log.error("type_not_found", name);
+                log.error("type.not.found", name);
                 return Type.ARBITRARY;
             } else {
                 return parent.lookupType(name, log);
@@ -57,7 +57,7 @@ public class SymbolTable {
         } else if (value instanceof Type) {
             return (Type)value;
         } else {
-            log.error("not_a_type", name);
+            log.error("not.a.type", name);
             return Type.ARBITRARY;
         }
     }
@@ -73,7 +73,7 @@ public class SymbolTable {
         Object value = map.get(name);
         if (value == null) {
             if (parent == null) {
-                log.error("variable_not_found", name);
+                log.error("variable.not.found", name);
                 return Variable.ARBITRARY;
             } else {
                 return parent.lookupVariable(name, log);
@@ -81,7 +81,7 @@ public class SymbolTable {
         } else if (value instanceof Variable) {
             return (Variable)value;
         } else {
-            log.error("not_a_variable", name);
+            log.error("not.a.variable", name);
             return Variable.ARBITRARY;
         }
     }
@@ -100,7 +100,7 @@ public class SymbolTable {
 
         if (value == null) {
             if (parent == null) {
-                log.error("function_not_found", name);
+                log.error("function.not.found", name);
                 return null;
             } else {
                 return parent.lookupFunction(name, log);
@@ -109,14 +109,28 @@ public class SymbolTable {
         } else if (value instanceof Function) {
             return (Function)value;
         } else {
-            log.error("not_a_function", name);
+            log.error("not.a.function", name);
             return null;
         }
     }
 
     public LoopStatement lookupLoop(String loopName, Log log) {
-        // TODO
-        return null;
+        Object value = map.get(loopName);
+
+        if (value == null) {
+            if (parent == null) {
+                log.error("loop.label.not.found", loopName);
+                return null;
+            } else {
+                return parent.lookupLoop(loopName, log);
+            }
+
+        } else if (value instanceof LoopStatement) {
+            return (LoopStatement)value;
+        } else {
+            log.error("not.a.loop.name", loopName);
+            return null;
+        }
     }
 
     /**

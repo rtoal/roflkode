@@ -2,6 +2,9 @@ package edu.lmu.cs.xlg.roflkode.entities;
 
 import edu.lmu.cs.xlg.util.Log;
 
+/**
+ * The Roflkode DIAF statement, which throws a string-valued expression.
+ */
 public class DiafStatement extends Statement {
 
     private Expression expression;

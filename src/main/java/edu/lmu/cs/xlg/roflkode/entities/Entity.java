@@ -43,12 +43,6 @@ import java.util.Set;
  *         IfStatement
  *         SwitchStatement
  *         LoopStatement
- *         UntilStatement
- *         WhileStatement
- *         ForwardArrayIterationStatement
- *         ReverseArrayIterationStatement
- *         ForwardRangeIterationStatement
- *         ReverseRangeIterationStatement
  *     Expression
  *         Literal
  *             NoobLiteral

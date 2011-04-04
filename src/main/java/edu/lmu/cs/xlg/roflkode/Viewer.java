@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -38,6 +39,7 @@ import javax.swing.tree.MutableTreeNode;
 
 import edu.lmu.cs.xlg.roflkode.entities.Entity;
 import edu.lmu.cs.xlg.roflkode.entities.Script;
+import edu.lmu.cs.xlg.roflkode.entities.SymbolTable;
 import edu.lmu.cs.xlg.roflkode.syntax.Parser;
 import edu.lmu.cs.xlg.util.Log;
 
@@ -120,19 +122,13 @@ public class Viewer extends JFrame {
         };
 
         Action syntaxAction = new AbstractAction("Syntax") {
-            {
-                putValue(Action.ACCELERATOR_KEY, getKeyStroke("F1"));
-            }
             public void actionPerformed(ActionEvent e) {viewSyntaxTree();}
         };
 
-//        Action semanticsAction = new AbstractAction("Semantics") {
-//            {
-//                putValue(Action.ACCELERATOR_KEY, getKeyStroke("F2"));
-//            }
-//            public void actionPerformed(ActionEvent e) {viewSemanticGraph();}
-//        };
-//
+        Action semanticsAction = new AbstractAction("Semantics") {
+            public void actionPerformed(ActionEvent e) {viewSemanticGraph();}
+        };
+
 //        Action quadsAction = new AbstractAction("Quads") {
 //            {
 //                putValue(Action.ACCELERATOR_KEY, getKeyStroke("F3"));
@@ -169,9 +165,9 @@ public class Viewer extends JFrame {
         fileMenu.add(quitAction);
         menuBar.add(fileMenu);
 
-        viewMenu.setText("View");
-        viewMenu.add(syntaxAction);
-//        viewMenu.add(semanticsAction);
+        //viewMenu.setText("View");
+        menuBar.add(new JButton(syntaxAction));
+        menuBar.add(new JButton(semanticsAction));
 //        viewMenu.add(quadsAction);
 //        viewMenu.add(optimizeAction);
 //        viewMenu.add(assemblyAction);
@@ -265,17 +261,17 @@ public class Viewer extends JFrame {
         }
     }
 
-//    private void viewSemanticGraph() {
-//        viewPane.setViewportView(view);
-//        Program program = analyze();
-//        if (log.getErrorCount() > 0) {
-//            view.setText(errors.toString());
-//        } else {
-//            StringWriter writer = new StringWriter();
-//            Entity.dump(new PrintWriter(writer), program);
-//            view.setText(writer.toString());
-//        }
-//    }
+    private void viewSemanticGraph() {
+        viewPane.setViewportView(view);
+        Script script = analyze();
+        if (log.getErrorCount() > 0) {
+            view.setText(errors.toString());
+        } else {
+            StringWriter writer = new StringWriter();
+            Entity.dump(new PrintWriter(writer), script);
+            view.setText(writer.toString());
+        }
+    }
 //
 //    private void viewQuads() {
 //        viewPane.setViewportView(view);
@@ -325,12 +321,12 @@ public class Viewer extends JFrame {
         return new Parser(reader).parse(reader, log);
     }
 
-//    private Program analyze() {
-//        Program program = parse();
-//        if (log.getErrorCount() > 0) return null;
-//        program.analyze(log);
-//        return program;
-//    }
+    private Script analyze() {
+        Script script = parse();
+        if (log.getErrorCount() > 0) return null;
+        script.analyze(log, new SymbolTable(null), null, false);
+        return script;
+    }
 //
 //    private UserSubroutine translate() {
 //        Program program = analyze();

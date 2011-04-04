@@ -30,8 +30,7 @@ public class Variable extends Declaration {
     /**
      * Special constructor for variables created during semantic analysis (not known while parsing).
      * Note that this takes in a real type, rather than just a type name, because these variables
-     * aren't part of a user's code and don't have to get analyzed.  TODO: Maybe there is a way
-     * to handle these normally.
+     * aren't part of a user's code and don't have to get analyzed.
      */
     public Variable(String name, Type type) {
         super(name);

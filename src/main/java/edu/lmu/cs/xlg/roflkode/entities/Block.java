@@ -68,7 +68,7 @@ public class Block extends Entity {
      */
     public void createTable(SymbolTable parent) {
         if (parent != null) {
-            // TODO: Throw exception if table already present?
+            // MAYBE: Consider throwing an error here.
         }
         table = new SymbolTable(parent);
     }
