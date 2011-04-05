@@ -31,7 +31,7 @@ public class IntegerLiteral extends Literal {
         try {
             value = Integer.valueOf(getLexeme());
         } catch (NumberFormatException e) {
-            log.error("bad_int", getLexeme());
+            log.error("bad.int", getLexeme());
         }
     }
 }

@@ -62,6 +62,14 @@ public class LoopStatement extends Statement {
 
     @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
-        // TODO Auto-generated method stub
+
+        // TODO - make sure name not already there and then insert it
+
+        // Condition can only exist if type is WHIEL or TIL
+        if ("WHIEL".equals(loopType) || "TIL".equals(loopType)) {
+            if (condition != null) {
+                condition.analyze(log, table);
+            }
+        }
     }
 }

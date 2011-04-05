@@ -41,12 +41,12 @@ public class PropertyVariableExpression extends VariableExpression {
         bukkit.analyze(log, table);
 
         if (!(bukkit.type instanceof BukkitType)) {
-            log.error("not_a_bukkit");
+            log.error("not.a.bukkit");
             type = Type.ARBITRARY;
         } else {
             property = ((BukkitType)bukkit.type).getProperty(propertyName, log);
 
-            // The type of theis variable is the type of the property.
+            // The type of this variable is the type of the property.
             type = property.getType();
         }
     }

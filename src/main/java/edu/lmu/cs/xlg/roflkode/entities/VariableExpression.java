@@ -19,7 +19,7 @@ public abstract class VariableExpression extends Expression {
      */
     public void assertWritable(Log log) {
         if (!isWritable()) {
-            log.error("read_only_error");
+            log.error("read.only.error");
         }
     }
 }

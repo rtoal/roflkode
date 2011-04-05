@@ -26,22 +26,18 @@ public class HerezStatement extends Statement {
     public void analyze(Log log, SymbolTable table, Function owner, boolean inLoop) {
         if (owner == null) {
             // At top-level, not inside any function
-            log.error("return_outside_function");
+            log.error("return.outside.function");
 
         } else if (owner.getReturnType() == null) {
-            // Inside a procedure, better not have a return expression
+            // Inside a procedure, we can't have a HEREZ statement
             if (expression != null) {
-                log.error("return_value_not_allowed");
+                log.error("return.value.not.allowed");
             }
-
-        } else if (expression == null) {
-            // Inside a function without a return expression
-            log.error("return_value_required");
 
         } else {
             // Returning something from a function, so typecheck
             expression.analyze(log, table);
-            expression.assertAssignableTo(owner.getReturnType(), log, "return_type_error");
+            expression.assertAssignableTo(owner.getReturnType(), log, "return.type.error");
         }
     }
 }

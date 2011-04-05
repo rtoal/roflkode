@@ -2,6 +2,9 @@ package edu.lmu.cs.xlg.roflkode.entities;
 
 import edu.lmu.cs.xlg.util.Log;
 
+/**
+ * The PLZ ... AWSUM THX ... O NOES ... MKAY statement.
+ */
 public class TryStatement extends Statement {
 
     private Statement statementToTry;

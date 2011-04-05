@@ -47,7 +47,7 @@ public class SwitchStatement extends Statement {
         expression.analyze(log, table);
         for (Arm arm: arms) {
             arm.guard.analyze(log, table);
-            // TODO - CHECK TYPE COMPATIBILITY BETWEEN arm.guard.type and expression.type
+            arm.guard.assertAssignableTo(expression.type, log, "bad.case.type");
             arm.block.analyze(log, table, function, inLoop);
         }
         if (elsePart != null) {

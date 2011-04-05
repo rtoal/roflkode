@@ -30,7 +30,7 @@ public class SymbolTable {
         Object oldValue = map.put(d.getName(), d);
 
         if (oldValue != null) {
-            log.error("redeclared_identifier", d.getName());
+            log.error("identifier.redeclared", d.getName());
         }
     }
 
@@ -119,7 +119,7 @@ public class SymbolTable {
 
         if (value == null) {
             if (parent == null) {
-                log.error("loop.label.not.found", loopName);
+                log.error("loop.not.found", loopName);
                 return null;
             } else {
                 return parent.lookupLoop(loopName, log);
@@ -128,7 +128,7 @@ public class SymbolTable {
         } else if (value instanceof LoopStatement) {
             return (LoopStatement)value;
         } else {
-            log.error("not.a.loop.name", loopName);
+            log.error("not.a.loop", loopName);
             return null;
         }
     }

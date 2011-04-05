@@ -73,5 +73,6 @@ public class Type extends Declaration {
      * A default implementation that does nothing, since many type subclasses need no analysis.
      */
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        // Intentionally empty.
     }
 }

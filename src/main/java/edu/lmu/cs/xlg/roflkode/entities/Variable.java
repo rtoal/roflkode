@@ -64,12 +64,28 @@ public class Variable extends Declaration {
      * Analyzes this variable.
      */
     public void analyze(Log log, SymbolTable table, Function owner, boolean inLoop) {
-        type = table.lookupType(typename, log);
+
+        // The declaration may or may not have a type name.  Look it up if it does.
+        if (typename != null) {
+            type = table.lookupType(typename, log);
+        }
+
+        // If initializer is not present, then there had better be a type.
+        if (initializer == null) {
+            if (typename == null) {
+                log.error("intializer.or.type.required");
+            }
+        }
 
         // If an initializer is present, analyze it and check types.
         if (initializer != null) {
             initializer.analyze(log, table);
-            initializer.assertAssignableTo(type, log, "init_type_error");
+            if (typename == null) {
+                // Here is the type inference part
+                type = initializer.type;
+            } else {
+                initializer.assertAssignableTo(type, log, "initializer.type.mismatch");
+            }
         }
     }
 }

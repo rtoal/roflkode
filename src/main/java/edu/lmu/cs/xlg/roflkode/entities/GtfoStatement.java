@@ -3,8 +3,8 @@ package edu.lmu.cs.xlg.roflkode.entities;
 import edu.lmu.cs.xlg.util.Log;
 
 /**
- * A Roflkode GTFO statement.  This is like a "break" statement in many popular languages.
- * In Roflkode, the statement may have an optional loop name operand.
+ * A Roflkode GTFO statement.  This can serve to exit a loop or to exit a function that does not
+ * return a value.
  */
 public class GtfoStatement extends Statement {
 
@@ -24,11 +24,12 @@ public class GtfoStatement extends Statement {
     }
 
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
-        if (!inLoop) {
-            log.error("gtfo_not_in_loop");
-        }
-        if (loopName != null) {
-            loop = table.lookupLoop(loopName, log);
-        }
+        //
+        //
+        //
+        // TODO
+        //
+        //
+        //
     }
 }

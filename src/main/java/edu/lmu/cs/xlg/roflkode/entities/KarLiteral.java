@@ -60,7 +60,7 @@ public class KarLiteral extends Literal {
                     result.add(value);
                 }
                 else {
-                    log.error("illegal_escape", c);
+                    log.error("illegal.escape", c);
                 }
             } else {
                 result.add((int)c);
