@@ -46,7 +46,7 @@ public class CallStatement extends Statement {
 
         // Ensure it is void
         if (function != null && function.getReturnType() != null) {
-            log.error("non_void_function_in_statement", functionName);
+            log.error("non.void.function.in.statement", functionName);
         }
     }
 }

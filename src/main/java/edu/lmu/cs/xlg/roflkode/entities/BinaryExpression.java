@@ -87,9 +87,8 @@ public class BinaryExpression extends Expression {
 
         // any SAME AS any
         } else if (op.matches("==")) {
-            if (!(left.isCompatibleWith(right.type)
-            || right.isCompatibleWith(left.type))) {
-                log.error("non_compatible", op, left.type.getName(), right.type.getName());
+            if (!(left.isCompatibleWith(right.type) || right.isCompatibleWith(left.type))) {
+                log.error("eq.type.error", op, left.type.getName(), right.type.getName());
             }
             type = Type.B00L;
 

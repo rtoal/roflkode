@@ -53,7 +53,7 @@ public class CallExpression extends VariableExpression {
 
         // Since called from expression, must have a return type
         if (function.getReturnType() == null) {
-            log.error("void_function_in_expression", functionName);
+            log.error("void.function.in.expression", functionName);
             type = Type.ARBITRARY;
         } else {
             type = function.getReturnType();
@@ -66,5 +66,4 @@ public class CallExpression extends VariableExpression {
     public boolean isWritable() {
         return false;
     }
-
 }

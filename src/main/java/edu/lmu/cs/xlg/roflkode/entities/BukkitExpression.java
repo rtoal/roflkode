@@ -46,14 +46,14 @@ public class BukkitExpression extends Expression {
     public void analyze(Log log, SymbolTable table) {
         type = table.lookupType(typename, log);
         if (! (type instanceof BukkitType)) {
-            log.error("illegal_bukkit_type", type.getName());
+            log.error("not.a.bukkit.type", type.getName());
             return;
         }
 
         List<BukkitType.Property> properties = BukkitType.class.cast(type).getProperties();
 
         if (args.size() != properties.size()) {
-            log.error("wrong_number_of_properties", type.getName(), properties.size(), args.size());
+            log.error("wrong.number.of.properties", type.getName(), properties.size(), args.size());
             return;
         }
 
@@ -63,7 +63,7 @@ public class BukkitExpression extends Expression {
             Expression a = ai.next();
             BukkitType.Property f = fi.next();
             a.analyze(log, table);
-            a.assertAssignableTo(f.getType(), log, "property_type_error");
+            a.assertAssignableTo(f.getType(), log, "property.type.error");
         }
     }
 }

@@ -80,7 +80,7 @@ public class BukkitType extends Type {
         Set<String> propertyNames = new HashSet<String>();
         for (Property property: properties) {
             if (! propertyNames.add(property.getName())) {
-                log.error("duplicate_field", property.getName(), this.getName());
+                log.error("duplicate.property", property.getName(), this.getName());
             }
         }
 
@@ -101,7 +101,7 @@ public class BukkitType extends Type {
         }
 
         // Didn't find it, use the placeholder.
-        log.error("no_such_property", this.getName(), name);
+        log.error("no.such.property", this.getName(), name);
         return Property.ARBITRARY;
     }
 }

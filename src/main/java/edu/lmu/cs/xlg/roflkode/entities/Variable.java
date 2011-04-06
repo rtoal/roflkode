@@ -65,16 +65,14 @@ public class Variable extends Declaration {
      */
     public void analyze(Log log, SymbolTable table, Function owner, boolean inLoop) {
 
+        // If initializer is not present, then there had better be a type.
+        if (initializer == null && typename == null) {
+            log.error("intializer.or.type.required");
+        }
+
         // The declaration may or may not have a type name.  Look it up if it does.
         if (typename != null) {
             type = table.lookupType(typename, log);
-        }
-
-        // If initializer is not present, then there had better be a type.
-        if (initializer == null) {
-            if (typename == null) {
-                log.error("intializer.or.type.required");
-            }
         }
 
         // If an initializer is present, analyze it and check types.

@@ -40,6 +40,6 @@ public class AssignmentStatement extends Statement {
         left.analyze(log, table);
         right.analyze(log, table);
         left.assertWritable(log);
-        right.assertAssignableTo(left.type, log, "assignment_type_error");
+        right.assertAssignableTo(left.type, log, "assignment.type.error");
     }
 }

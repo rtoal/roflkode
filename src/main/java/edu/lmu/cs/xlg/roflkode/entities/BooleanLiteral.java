@@ -22,6 +22,6 @@ public class BooleanLiteral extends Literal {
      * Does nothing, since analysis always succeeds.
      */
     public void analyze(Log log, SymbolTable table) {
-        this.type = Type.N00B_TYPE;
+        this.type = Type.B00L;
     }
 }

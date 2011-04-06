@@ -7,7 +7,7 @@ import java.util.Set;
 
 import edu.lmu.cs.xlg.util.Log;
 
-public class SymbolTable {
+public class SymbolTable extends Entity {
 
     // The actual contents of the symbol table.  Names map to entities.
     Map<String, Entity> map = new HashMap<String, Entity>();
@@ -146,4 +146,9 @@ public class SymbolTable {
         }
         return result;
     }
+
+//    @Override
+//    public String toString() {
+//       //
+//    }
 }
