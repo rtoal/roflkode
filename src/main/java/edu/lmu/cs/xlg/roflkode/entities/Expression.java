@@ -30,8 +30,6 @@ public abstract class Expression extends Entity {
         return this.type == testType
             || this.type == Type.INT && testType == Type.NUMBR
             || this.type == Type.N00B_TYPE && testType.isReference()
-            || this.type instanceof ArrayType && testType == Type.ARRAY_OR_STRING
-            || this.type == Type.YARN && testType == Type.ARRAY_OR_STRING
             || this.type == Type.ARBITRARY
             || testType == Type.ARBITRARY;
     }

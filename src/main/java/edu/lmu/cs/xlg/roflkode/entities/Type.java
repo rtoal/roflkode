@@ -14,22 +14,16 @@ public class Type extends Declaration {
     public static final Type YARN = new Type("YARN");
 
     /**
-     * A type representing the union of all types.  It is assigned to an entity whose typename is
-     * not in scope to allow compilation to proceed without generating too many spurious errors.
-     * It is compatible with all other types.
-     */
-    public static final Type ARBITRARY = new Type("<arbitrary>");
-
-    /**
      * The type whose sole member is the literal N00B.
      */
     public static final Type N00B_TYPE = new Type("<type_of_n00b>");
 
     /**
-     * A type representing the union of the string type and all array types.  This is required
-     * because some Roflkode operations work on either strings or arrays.
+     * A type representing the union of all types.  It is assigned to an entity whose typename is
+     * not in scope to allow compilation to proceed without generating too many spurious errors.
+     * It is compatible with all other types.
      */
-    public static final Type ARRAY_OR_STRING = new Type("<array_or_string>");
+    public static final Type ARBITRARY = new Type("<arbitrary>");
 
     // The type of arrays of this type.  Created only if needed.
     private ArrayType arrayOfThisType = null;
@@ -48,7 +42,6 @@ public class Type extends Declaration {
         return this == YARN
             || this instanceof ArrayType
             || this instanceof BukkitType
-            || this == ARRAY_OR_STRING
             || this == ARBITRARY;
     }
 
