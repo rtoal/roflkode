@@ -383,17 +383,19 @@ Statement parseLoop(): {
     Block body;
 }{
     "IM" "IN" "UR" t = <ID> {name = t.image;} (<BR>)*
-    (t = "WHIEL" | t = "TIL") {loopType = t.image;} condition = parseExp()
-    |
-    (t = "UPPIN" | t = "NERFIN") {loopType = t.image;}
-    t = <ID> {iterator = t.image;}
     (
-        "FROM" start = parseExp() "TO" end = parseExp()
+        (t = "WHIEL" | t = "TIL") {loopType = t.image;} condition = parseExp()
     |
-        "THRU" collection = parseExp()
+        (t = "UPPIN" | t = "NERFIN") {loopType = t.image;}
+        t = <ID> {iterator = t.image;}
+        (
+            "FROM" start = parseExp() "TO" end = parseExp()
+        |
+            "THRU" collection = parseExp()
+        )
     )
     (<BR>)+
-    LOOKAHEAD(2) body = parseBlock()
+    body = parseBlock()
     "LOL"
     {return new LoopStatement(name, loopType, condition, iterator, start, end, collection, body);}
 }
