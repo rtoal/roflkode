@@ -49,20 +49,20 @@ public class BinaryExpression extends Expression {
         right.analyze(log, table);
 
         // num op num (for arithmetic op)
-        if (op.matches("UP|NERF|TIEMZ|OVR")) {
+        if (op.matches("[-+*/]")) {
             left.assertArithmetic(op, log);
             right.assertArithmetic(op, log);
             type = (left.type == Type.NUMBR || right.type == Type.NUMBR)
                 ? Type.NUMBR : Type.INT;
 
         // int op int returning int (for shifts and mod)
-        } else if (op.matches("LEFTOVR|BITZLEFT|BITZRIGHT")) {
+        } else if (op.matches("%|<<|>>")) {
             left.assertInteger(op, log);
             right.assertInteger(op, log);
             type = Type.INT;
 
         // int DIVIDZ int
-        } else if (op.matches("DIVIDZ")) {
+        } else if (op.matches("\\")) {
             left.assertInteger(op, log);
             right.assertInteger(op, log);
             type = Type.B00L;

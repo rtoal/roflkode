@@ -612,8 +612,11 @@ String parseRelop(): {
 String parseShiftop(): {
     Token t;
 }{
-    (t = "BITZLEFT" | t = "BITZRIGHT")
-    {return t.image;}
+    (
+        t = "BITZLEFT" {return "<<";}
+    |
+        t = "BITZRIGHT" {return ">>";}
+    )
 }
 
 String parseAddop(): {
@@ -629,8 +632,13 @@ String parseAddop(): {
 String parseMulop(): {
     Token t;
 }{
-    (t = "TIEMZ" | t = "OVR" | t = "LEFTOVR")
-    {return t.image;}
+    (
+        t = "TIEMZ" {return "*";}
+    |
+        t = "OVR" {return "/";}
+    |
+        t = "LEFTOVR" {return "%";}
+    )
 }
 
 String parsePrefixop(): {
