@@ -45,7 +45,7 @@ public class Function extends Declaration {
      * Performs semantic analysis on the function's signature and return type, but not the body.
      */
     public void analyzeSignature(Log log, SymbolTable table, Function owner, boolean inLoop) {
-        returnType = returnTypeName == "void" ? null : table.lookupType(returnTypeName, log);
+        returnType = returnTypeName == null ? null : table.lookupType(returnTypeName, log);
         body.createTable(table);
         for (Variable parameter: parameters) {
             body.getTable().insert(parameter, log);
