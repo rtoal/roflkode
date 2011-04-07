@@ -10,7 +10,7 @@ import edu.lmu.cs.xlg.util.Log;
  */
 public class SwitchStatement extends Statement {
 
-    public static class Arm {
+    public static class Arm extends Entity {
         private Literal guard;
         private Block block;
 

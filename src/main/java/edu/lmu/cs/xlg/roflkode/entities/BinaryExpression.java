@@ -62,7 +62,7 @@ public class BinaryExpression extends Expression {
             type = Type.INT;
 
         // int DIVIDZ int
-        } else if (op.matches("\\")) {
+        } else if (op.matches("\\\\")) {
             left.assertInteger(op, log);
             right.assertInteger(op, log);
             type = Type.B00L;

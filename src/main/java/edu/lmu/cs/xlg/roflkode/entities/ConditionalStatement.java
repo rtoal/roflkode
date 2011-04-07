@@ -10,7 +10,7 @@ import edu.lmu.cs.xlg.util.Log;
  */
 public class ConditionalStatement extends Statement {
 
-    public static class Arm {
+    public static class Arm extends Entity {
         private Expression guard;
         private Block block;
 
