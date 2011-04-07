@@ -42,6 +42,19 @@ public class SymbolTable extends Entity {
      * not a type object, logs an error message and returns Type.ANY.
      */
     public Type lookupType(String name, Log log) {
+
+        if ("YARN".equals(name)) {
+            return Type.YARN;
+        } else if ("INT".equals(name)) {
+            return Type.INT;
+        } else if ("NUMBR".equals(name)) {
+            return Type.NUMBR;
+        } else if ("KAR".equals(name)) {
+            return Type.KAR;
+        } else if ("B00L".equals(name)) {
+            return Type.B00L;
+        }
+
         if (name.endsWith(" LIST")) {
             return lookupType(name.substring(0,name.length() - 5), log).array();
         }
