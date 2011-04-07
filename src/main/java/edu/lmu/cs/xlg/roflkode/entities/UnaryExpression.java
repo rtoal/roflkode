@@ -61,8 +61,12 @@ public class UnaryExpression extends Expression {
         } else if ("YARNZOR".equals(op)) {
             type = Type.YARN;
 
+        } else if ("NUMZOR".equals(op)) {
+            operand.assertInteger(op, log);
+            type = Type.NUMBR;
+
         } else {
-            log.error("compiler_bug");
+            log.error("compiler.bug");
             type = Type.ARBITRARY;
         }
     }

@@ -76,7 +76,8 @@ public class BukkitType extends Type {
      * Analyzes this type.  First check that all property names are unique. Then check that every
      * property declaration has a valid type.
      */
-    public void analyze(Log log, SymbolTable table) {
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         Set<String> propertyNames = new HashSet<String>();
         for (Property property: properties) {
             if (! propertyNames.add(property.getName())) {
