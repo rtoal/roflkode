@@ -1,0 +1,7 @@
+BTW Tests assignment semantic.  
+BTW Authors: Anthony Khayat, David Kikuta, Allison Neyer
+
+HAI
+  I HAS A x    BTW This is good syntax, but x can't be
+               BTW inferred so bad semantics.  
+KTHXBYE

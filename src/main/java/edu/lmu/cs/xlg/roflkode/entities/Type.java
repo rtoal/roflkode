@@ -24,6 +24,8 @@ public class Type extends Declaration {
      * It is compatible with all other types.
      */
     public static final Type ARBITRARY = new Type("<arbitrary>");
+    public static final Type ARBITRARY_ARRAY = new Type("<arbitrary_array>");
+    public static final Type ARBITRARY_ARRAY_OF_REFERENCES = new Type("<arbitrary_array_of_references>");
 
     // The type of arrays of this type.  Created only if needed.
     private ArrayType arrayOfThisType = null;

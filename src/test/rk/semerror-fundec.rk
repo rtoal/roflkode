@@ -1,0 +1,11 @@
+BTW Function declaration semantic error test
+BTW Authors: Anthony Khayat, David Kikuta, Allison Neyer
+
+HAI
+
+  I CAN doIt
+    BTW Return type is void so HEREZ UR shouldn't be there
+    HEREZ UR "order"
+  SRSLY
+
+KTHXBYE

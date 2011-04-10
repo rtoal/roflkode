@@ -64,13 +64,12 @@ public class Block extends Entity {
     }
 
     /**
-     * Creates the symbol table for this block.
+     * Creates the symbol table for this block, only if it has not already been created.
      */
     public void createTable(SymbolTable parent) {
-        if (parent != null) {
-            // MAYBE: Consider throwing an error here.
+        if (table == null) {
+            table = new SymbolTable(parent);
         }
-        table = new SymbolTable(parent);
     }
 
     /**
@@ -82,10 +81,10 @@ public class Block extends Entity {
         List<Function> functions = getFunctions();
 
         // Create the table if it hasn't already been created.  For blocks that are bodies of
-        // functions or iteration statements, the analyze() method of the function or statement
-        // will have created this table already, since it is the table in which the parameters or
-        // or iteration statement index belong.  For blocks that are entire scripts, the table will
-        // have already been created, too.  All other blocks will need their tables created here.
+        // functions or loops, the analyze() method of the function or loop will have created this
+        // table already, since it is the table in which the parameters or loop indices belong.
+        // For blocks that are entire scripts, the table will have already been created, too.
+        // All other blocks will need their tables created here.
         if (table == null) {
             table = new SymbolTable(outer);
         }
@@ -117,18 +116,24 @@ public class Block extends Entity {
             table.insert(function, log);
         }
 
-        // Now just go through all the items in order and analyze everything, inserting variables as
-        // you go.  The variables have to be inserted during this final pass, since they are only in
-        // scope from their point of declaration onward. (In other words, if we tried to first
-        // insert all the variables and then analyze them later, that would have been wrong.)
+        // Now just go through all the items in order and analyze everything (except types, which
+        // were already analyzed), making sure to  insert anything that has not already been
+        // inserted earlier.  Types and functions will have already been inserted, so loops and
+        // variables have to be inserted now.
         for (Statement s: statements) {
+            if (s instanceof Type) {
+                // The types were already analyzed, so don't analyze them again
+                continue;
+            }
+
             if (s instanceof Variable) {
                 table.insert((Variable)s, log);
             }
-            if (s instanceof Type) {
-                // Don't analyze types again
-                continue;
+
+            if (s instanceof LoopStatement) {
+                table.insert((LoopStatement)s, log);
             }
+
             s.analyze(log, table, owner, inLoop);
         }
     }

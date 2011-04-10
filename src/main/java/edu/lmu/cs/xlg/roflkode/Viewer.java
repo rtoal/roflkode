@@ -324,7 +324,7 @@ public class Viewer extends JFrame {
     private Script analyze() {
         Script script = parse();
         if (log.getErrorCount() > 0) return null;
-        script.analyze(log, new SymbolTable(null), null, false);
+        script.analyze(log);
         return script;
     }
 //

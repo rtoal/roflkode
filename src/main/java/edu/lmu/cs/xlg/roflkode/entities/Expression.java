@@ -45,49 +45,49 @@ public abstract class Expression extends Entity {
 
     void assertArithmetic(String context, Log log) {
         if (!(type == Type.INT || type == Type.NUMBR)) {
-            log.error("non_arithmetic", context);
+            log.error("non.arithmetic", context);
         }
     }
 
     void assertArithmeticOrChar(String context, Log log) {
         if (!(type == Type.INT || type == Type.NUMBR || type == Type.KAR)) {
-            log.error("non_arithmetic", context);
+            log.error("non.arithmetic.or.char", context);
         }
     }
 
     void assertInteger(String context, Log log) {
         if (!(type == Type.INT)) {
-            log.error("non_integer", context);
+            log.error("non.integer", context);
         }
     }
 
     void assertBoolean(String context, Log log) {
         if (!(type == Type.B00L)) {
-            log.error("non_boolean", context);
+            log.error("non.boolean", context);
         }
     }
 
     void assertChar(String context, Log log) {
         if (!(type == Type.KAR)) {
-            log.error("non_char", context);
+            log.error("non.char", context);
         }
     }
 
     void assertArray(String context, Log log) {
         if (!(type instanceof ArrayType)) {
-            log.error("non_array", context);
+            log.error("non.array", context);
         }
     }
 
     void assertString(String context, Log log) {
         if (!(type == Type.YARN)) {
-            log.error("non_string", context);
+            log.error("non.string", context);
         }
     }
 
     void assertArrayOrString(String context, Log log) {
         if (!(type == Type.YARN || type instanceof ArrayType)) {
-            log.error("non_array_or_string", context);
+            log.error("non.array.or.string", context);
         }
     }
 }

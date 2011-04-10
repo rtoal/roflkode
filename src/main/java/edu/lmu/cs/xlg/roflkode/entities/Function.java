@@ -1,12 +1,13 @@
 package edu.lmu.cs.xlg.roflkode.entities;
 
+import java.util.Iterator;
 import java.util.List;
 
 import edu.lmu.cs.xlg.util.Log;
 
 /**
  * A Roflkode function.  Functions whose body is null are "external" functions, whose signature
- * is defined in Roflkode but whose body is linked in.
+ * is defined in Roflkode but whose body is implemented elsewhere and brought in by a linker.
  */
 public class Function extends Declaration {
 
@@ -16,7 +17,7 @@ public class Function extends Declaration {
     private Type returnType;
 
     /**
-     * Creates a normal function object.
+     * Creates a function object.
      */
     public Function(String returnTypeName, String name, List<Variable> parameters, Block body) {
         super(name);
@@ -46,10 +47,18 @@ public class Function extends Declaration {
      */
     public void analyzeSignature(Log log, SymbolTable table, Function owner, boolean inLoop) {
         returnType = returnTypeName == null ? null : table.lookupType(returnTypeName, log);
-        body.createTable(table);
+        SymbolTable tableForParameters;
+        if (body == null) {
+            // It's an external function.  The parameters can go in a temporary scratch table.
+            tableForParameters = new SymbolTable(null);
+        } else {
+            // There is a body; the parameters share scope with the body.
+            body.createTable(table);
+            tableForParameters = body.getTable();
+        }
         for (Variable parameter: parameters) {
-            body.getTable().insert(parameter, log);
-            parameter.analyze(log, body.getTable(), owner, inLoop);
+            tableForParameters.insert(parameter, log);
+            parameter.analyze(log, tableForParameters, owner, inLoop);
         }
     }
 
@@ -59,6 +68,33 @@ public class Function extends Declaration {
      * loaded.
      */
     public void analyze(Log log, SymbolTable table, Function owner, boolean inLoop) {
-        body.analyze(log, table, this, false);
+
+        // Some functions have no body, but analyze the bodies of those that do.
+        if (body != null) {
+            body.analyze(log, table, this, false);
+        }
+    }
+
+    /**
+     * Asserts that this function can be called with the given list of arguments. There have to be
+     * the same number of arguments as parameters, and each argument must be type-compatible with
+     * the type of the corresponding parameter.
+     */
+    public void assertCanBeCalledWith(List<Expression> args, Log log) {
+
+        if (args.size() != parameters.size()) {
+            log.error("argument.count.mismatch", args.size(), parameters.size());
+        }
+
+        // Check each parameter against the corresponding argument.
+        Iterator<Expression> ai = args.iterator();
+        Iterator<Variable> pi = parameters.iterator();
+        while (pi.hasNext()) {
+            Expression arg = ai.next();
+            Variable parameter = pi.next();
+            if (!arg.isCompatibleWith(parameter.getType())) {
+                log.error("parameter.type.mismatch", parameter.getName());
+            }
+        }
     }
 }

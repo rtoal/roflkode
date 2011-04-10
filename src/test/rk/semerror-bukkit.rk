@@ -1,0 +1,15 @@
+BTW Tests semantics of a BUKKIT constructor
+BTW Authors: Anthony Khayat, David Kikuta, Allison Neyer
+
+HAI
+
+  TEH BUKKIT UV
+    YARN name
+    INT rating
+  AKA restaurant
+  
+  I HAS A burgerjoint ITZ restaurant <:10 "YUMBURGER" :>    BTW Parameters on constructor
+                                                            BTW must be in order they were
+                                                            BTW declared.  
+
+KTHXBYE

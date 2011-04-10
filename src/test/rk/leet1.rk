@@ -1,0 +1,258 @@
+BTW Tests to check for correct syntax and semantics.
+BTW Authors: Anthony Khayat, David Kikuta, Allison Neyer
+
+HAI
+
+TEH BUKKIT UV INT x INT y AKA point
+
+BTW THESE R VARIABLE DECLARATIONS
+I HAS A word ITZ "yo"
+I HAS A KAR k ITZ 'j'
+I HAS A INT LIST nada ITZ N00B
+I HAS A integerr ITZ 4EVER 2
+I HAS A point p
+I HAS A YARN tale ITZ 4EVER "knot"
+I HAS A NUMBR numbr1 ITZ 12.3
+I HAS A point LIST LIST LIST LIST LIST longlist
+I HAS A B00L LIST boollist ITZ [: WIN WIN :]
+I HAS A INT int2 ITZ 4EVER 777
+I HAS A INT i
+i R 0
+i R i UP 1
+i R i UP (2 UP 1)
+
+BTW THESE R FUNCTION DECLARATIONS
+THEM CAN rofl0
+THEM CAN MAEK INT x0
+THEM CAN rofl1 UR INT x1
+THEM CAN rofl2 UR INT x2 AN INT y2
+THEM CAN rofl3 WIF UR YARN kitteh
+THEM CAN rofl4 WIF UR INT x3 AN INT y3
+THEM CAN MAEK YARN s0 UR B00L b0
+THEM CAN MAEK YARN s1 UR B00L b1 AN KAR k1
+THEM CAN MAEK YARN s2 WIF UR B00L b2
+THEM CAN MAEK YARN s3 WIF UR B00L b3 AN KAR k3
+
+BTW THESE R CONDITIONALS
+i PWNS 5 ORELSE i PWNED BY 5?
+    WERD
+    BRB 10
+OIC
+
+i PWNS 5 ANALSO i PWNS 7?
+    WERD
+    YO "hai" IF i SAEM AS 8
+    YO "no" CEPT IF i SAEM AS 9
+    YO "puppeh" WHIEL i PWNS 8
+    YO "kitteh" TIL i PWNS 11
+    NERFZORZ i
+    UPZORZ i
+OIC
+
+i PWNS 5?
+    WERD
+    YO "kitteh"
+    MEBBE i PWNS 6
+        YO "puppeh"
+OIC
+
+i PWNS 5?
+    WERD
+    YO "kitteh"
+    MEBBE i PWNS 6
+        YO "puppeh"
+        YO "birdeh"
+OIC
+
+i PWNS 5?
+    WERD
+    YO "kitteh"
+    YO "bunneh"
+    MEBBE i PWNS 6
+        YO "puppeh"
+        YO "birdeh"
+OIC
+
+i PWNS 5?
+    WERD
+    YO "kitteh"
+    MEBBE i PWNS 6
+        YO "puppeh"
+    NO WAI
+        YO "birdeh"
+OIC
+
+i PWNS 5?
+    WERD
+    YO "kitteh"
+    MEBBE i PWNS 6
+        YO "puppeh"
+    NO WAI
+        YO "birdeh"
+        YO "horseh"
+OIC
+
+i PWNS 5?
+    WERD
+    YO "kitteh"
+    NO WAI
+        YO "birdeh"
+OIC
+
+NAA (i PWNS 5)?
+    WERD
+    YO "kitteh"
+    NO WAI
+        YO "birdeh"
+        YO "horseh"
+OIC
+
+i PWNED BY 3?
+    WERD
+        I HAS A INT bitxor ITZ 1 BITXOR 2
+        I HAS A INT bitand ITZ 1 BITAND 2
+        I HAS A INT bitleft ITZ 1 BITZLEFT 2
+        I HAS A INT bitright ITZ 1 BITZRIGHT 2
+        I HAS A INT bitbit ITZ bitleft TIEMZ bitright
+        bitbit R 1 OVR 3
+        bitbit R bitbit LEFTOVR 3
+        bitbit R BITZFLIP bitbit
+    NO WAI
+        I HAS A bitor ITZ 1 BITOR 2
+OIC
+
+5 NERF 4 SAEM AS 1?
+    WERD
+        I HAS A YARN hello ITZ "hello, "
+        hello R hello ~~ "world"
+        I HAS A INT length ITZ SIEZ UV hello
+    NO WAI
+        I HAS A NUMBR n ITZ 1
+        n R INTZOR n
+        BTW n R NUMZOR n <--- TODO
+
+        I HAS A INT int ITZ 1
+
+OIC
+
+BTW THESE R SWITCH STATEMENTS
+i PWNED BY 3 WTF?
+    OMG WIN
+        YO "doggeh"
+    OMGWTF
+        YO "kitteh"
+OIC
+
+i PWNED BY 3 WTF?
+    OMG WIN
+        YO "doggeh"
+        YO "birdeh"
+    OMGWTF
+        YO "kitteh"
+        YO "horseh"
+OIC
+
+i PWNED BY 3 WTF?
+    OMG WIN
+        YO "doggeh"
+    OMG FAIL
+        YO "birdeh"
+    OMGWTF
+        YO "kitteh"
+OIC
+
+BTW THESE R LOOPS
+IM IN UR loop0
+    WHIEL i PWNS OR SAEM AS 2
+        GTFO loop0
+LOL
+
+IM IN UR loop1
+    WHIEL i PWNED BY OR SAEM AS 2
+        HWGA        BTW infinite loop!!!
+        NERFZORZ i
+LOL
+
+IM IN UR loop2
+    TIL i DIVIDZ 2
+        YO "kitteh"
+LOL
+
+IM IN UR loop3
+    TIL i PWNS 2
+        YO "kitteh"
+        UPZORZ i
+LOL
+
+IM IN UR loop4
+    UPPIN i FROM 3 TO 7
+        YO "Hi Dr. Toal!"
+LOL
+
+IM IN UR loop5
+    UPPIN i FROM 3 TO 7
+        YO "Hi Dr. Toal!"
+        YO "bye"
+LOL
+
+IM IN UR loop6
+    UPPIN i THRU [: FAIL WIN FAIL :]
+        YO "Hi Dr. Toal!"
+LOL
+
+IM IN UR loop7
+    UPPIN i THRU [: 2 4 6 5 3 1 :]
+        YO "Hi Dr. Toal!"
+        YO "bye"
+LOL
+
+IM IN UR loop8
+    NERFIN i FROM 3 TO 7
+        YO "Hi Dr. Toal!"
+LOL
+
+IM IN UR loop9
+    NERFIN i FROM 3 TO 7
+        YO "Hi Dr. Toal!"
+        YO "bye"
+LOL
+
+IM IN UR loop10
+    NERFIN i THRU [: "Moe" "Larry" "Curly" :]
+        GIMMEH word
+LOL
+
+IM IN UR loop11
+    NERFIN i THRU [: 's' 'm' 'l' 'x' :]
+        YO "Hi Dr. Toal!"
+        YO "bye"
+LOL
+
+IM IN UR loop12
+    WHIEL 1 PWNED BY 2
+        IM IN UR loop13
+            WHIEL 2 PWNED BY 3
+                HWGA loop12
+        LOL
+LOL
+
+
+BTW THESE R TRY STATEMENTS
+PLZ i R 2
+AWSUM THX
+    YO "winnar"
+O NOES
+    FACEPALM "fails"
+MKAY
+
+PLZ i R 2
+AWSUM THX
+    YO "winner winner"
+    YO "chicken dinner"
+O NOES
+    FACEPALM "fails"
+    DIAF "fail statement is fail"
+MKAY
+
+KTHXBYE
+

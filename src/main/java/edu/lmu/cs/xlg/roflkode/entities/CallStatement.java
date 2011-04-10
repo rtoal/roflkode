@@ -36,7 +36,7 @@ public class CallStatement extends Statement {
      */
     public void analyze(Log log, SymbolTable table, Function owner, boolean inLoop) {
 
-        // Analyze arguments first
+        // Analyze arguments first.
         for (Expression a: arguments) {
             a.analyze(log, table);
         }
@@ -44,9 +44,20 @@ public class CallStatement extends Statement {
         // Find out which function we're referring to.
         function = table.lookupFunction(functionName, log);
 
-        // Ensure it is void
-        if (function != null && function.getReturnType() != null) {
+        // If there's no such function, just bail on the rest of the analysis because we don't
+        // want to generate spurious errors when checking to make sure there is no return type
+        // and checking to see if the arguments match parameters.  The error will have already
+        // been logged in the call to lookupFunction.
+        if (function == null) {
+            return;
+        }
+
+        // Ensure it is void.
+        if (function.getReturnType() != null) {
             log.error("non.void.function.in.statement", functionName);
         }
+
+        // Now check all the arguments against all the parameters.
+        function.assertCanBeCalledWith(arguments, log);
     }
 }

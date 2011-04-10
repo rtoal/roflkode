@@ -1,0 +1,13 @@
+BTW Tests the function call in a YO statement
+BTW Authors: Anthony Khayat, David Kikuta, Allison Neyer
+
+HAI
+
+  I CAN MAEK YARN greet WIF UR YARN s
+    HEREZ UR "GOOOOD MORNING, " ~~ s
+  SRSLY
+
+  YO greet ("VIETNAM!") BTW YOU NEED COLONS MORON!!!
+                        BTW OTHERWISE IT'S TRYING TO YO THE FUNCTION greet
+                        BTW AND THE STRING LITERAL "VIETNAM!"
+KTHXBYE

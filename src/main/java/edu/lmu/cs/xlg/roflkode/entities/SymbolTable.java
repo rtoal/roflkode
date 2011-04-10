@@ -105,8 +105,6 @@ public class SymbolTable extends Entity {
      * @param name the name of the function to search for.
      * @return the innermost visible function with that name.  If not found, or if the value found
      * is not a function object, logs an error message and returns null.
-     *
-     * TODO: We need Function.ARBITRARY, I think?
      */
     public Function lookupFunction(String name, Log log) {
         Object value = map.get(name);
@@ -118,7 +116,6 @@ public class SymbolTable extends Entity {
             } else {
                 return parent.lookupFunction(name, log);
             }
-
         } else if (value instanceof Function) {
             return (Function)value;
         } else {
@@ -137,7 +134,6 @@ public class SymbolTable extends Entity {
             } else {
                 return parent.lookupLoop(loopName, log);
             }
-
         } else if (value instanceof LoopStatement) {
             return (LoopStatement)value;
         } else {
@@ -159,9 +155,4 @@ public class SymbolTable extends Entity {
         }
         return result;
     }
-
-//    @Override
-//    public String toString() {
-//       //
-//    }
 }

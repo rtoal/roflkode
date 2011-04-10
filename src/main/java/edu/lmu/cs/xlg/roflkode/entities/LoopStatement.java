@@ -5,9 +5,8 @@ import edu.lmu.cs.xlg.util.Log;
 /**
  * A Roflkode loop statement.
  */
-public class LoopStatement extends Statement {
+public class LoopStatement extends Declaration {
 
-    private String name;
     private String loopType;
     private Expression condition;
     private String iterator;
@@ -18,7 +17,7 @@ public class LoopStatement extends Statement {
 
     public LoopStatement(String name, String loopType, Expression condition, String iterator,
             Expression start, Expression end, Expression collection, Block body) {
-        this.name = name;
+        super(name);
         this.loopType = loopType;
         this.condition = condition;
         this.iterator = iterator;
@@ -26,10 +25,6 @@ public class LoopStatement extends Statement {
         this.end = end;
         this.collection = collection;
         this.body = body;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getLoopType() {
@@ -63,13 +58,32 @@ public class LoopStatement extends Statement {
     @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
 
-        // TODO - make sure name not already there and then insert it
-
-        // Condition can only exist if type is WHIEL or TIL
-        if ("WHIEL".equals(loopType) || "TIL".equals(loopType)) {
-            if (condition != null) {
-                condition.analyze(log, table);
-            }
+        // An indefinite (WHIEL or TIL) loop.
+        if (condition != null) {
+            condition.analyze(log, table);
         }
+
+        // A loop iterating through a collection - iteration variable has same type as collection
+        // base type.
+        if (collection != null) {
+            collection.analyze(log, table);
+            collection.assertArray("loop", log);
+            body.createTable(table);
+            body.getTable().insert(new Variable(iterator, collection.getType().array()), log);
+        }
+
+        // A loop iterating through a range - bounds must be INTs, and declaration the iteration
+        // variable as an INT also.
+        if (start != null && end != null) {
+            start.analyze(log, table);
+            end.analyze(log, table);
+            start.assertInteger("loop", log);
+            end.assertInteger("loop", log);
+            body.createTable(table);
+            body.getTable().insert(new Variable(iterator, Type.INT), log);
+        }
+
+        // Analyze the body last, as it may depend on other things.
+        body.analyze(log, table, function, true);
     }
 }

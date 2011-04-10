@@ -16,7 +16,7 @@ public class Variable extends Declaration {
      * not been declared.  This variable is type-compatible with everything, so its use serves to
      * prevent a flood of spurious error messages.
      */
-    public static final Variable ARBITRARY = new Variable("<unknown>", Type.ARBITRARY);
+    public static final Variable ARBITRARY = new Variable("<arbitrary>", Type.ARBITRARY);
 
     /**
      * Constructs a variable.
@@ -77,6 +77,7 @@ public class Variable extends Declaration {
 
         // If an initializer is present, analyze it and check types.
         if (initializer != null) {
+            System.out.println("Analyzing initializer");
             initializer.analyze(log, table);
             if (typename == null) {
                 // Here is the type inference part

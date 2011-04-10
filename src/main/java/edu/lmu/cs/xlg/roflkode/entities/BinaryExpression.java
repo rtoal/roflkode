@@ -67,6 +67,12 @@ public class BinaryExpression extends Expression {
             right.assertInteger(op, log);
             type = Type.B00L;
 
+        // int bit operator int
+        } else if (op.matches("BIT(?:AND|X?OR)")) {
+            left.assertInteger(op, log);
+            right.assertInteger(op, log);
+            type = Type.INT;
+
         // char/num/str op char/num/str (for greater/less inequalities)
         } else if (op.matches("<|<=|>|>=")) {
             if (left.type == Type.KAR) {

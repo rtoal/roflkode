@@ -14,7 +14,7 @@ import edu.lmu.cs.xlg.util.Log;
 /**
  * A Roflkode compiler. This class contains a static main method allowing you to run the compiler
  * from the command line, as well as a few methods to compile, or run phases of the compiler,
- * programatically.
+ * programmatically.
  */
 public class Compiler {
 
@@ -32,12 +32,13 @@ public class Compiler {
      *            file to compile; if missing, the compiler will read from standard input.
      */
     public static void main(String[] args) throws Exception {
-        System.out.println("All I can do now is check syntax.");
+        System.out.println("All I can do now is check syntax and semantics.");
 
         Compiler compiler = new Compiler();
         Reader reader = (args.length == 0) ? new BufferedReader(new InputStreamReader(System.in))
                 : new FileReader(args[0]);
-        System.out.println(compiler.checkSyntax(reader));
+        Script script = compiler.checkSyntax(reader);
+        script.analyze(compiler.log);
 
         // TODO: Obviously, this is a stub.
     }
@@ -71,11 +72,11 @@ public class Compiler {
      */
     public Script checkSemantics(Reader reader) throws IOException {
         Script script = checkSyntax(reader);
-        if (log.getErrorCount() > 0)
+        if (log.getErrorCount() > 0) {
             return null;
-
+        }
         log.message("semantics.checking");
-        // TODO -----> script.analyze(log);
+        script.analyze(log);
         return script;
     }
 

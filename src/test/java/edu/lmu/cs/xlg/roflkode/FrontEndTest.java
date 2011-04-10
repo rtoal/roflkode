@@ -34,10 +34,8 @@ public class FrontEndTest {
             }
         });
 
-        System.out.println(filenames);
-
         for (String filename : filenames) {
-            System.out.print("Compiling " + filename + "... ");
+            System.out.println("Compiling " + filename + "... ");
             Reader reader = new FileReader(TEST_DIRECTORY + "/" + filename);
 
             Compiler compiler = new Compiler();
@@ -60,7 +58,6 @@ public class FrontEndTest {
                 compiler.checkSemantics(reader);
                 assertTrue(compiler.getErrorCount() == 0);
             }
-            System.out.println();
         }
     }
 }

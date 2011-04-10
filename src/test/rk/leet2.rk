@@ -1,0 +1,146 @@
+BTW Tests to check for correct syntax and semantics.
+BTW Authors: Anthony Khayat, David Kikuta, Allison Neyer
+
+HAI
+
+BTW THIS IZ IMPORT STATEMENT
+CAN HAS foo?
+CAN HAS bar?
+
+TEH BUKKIT UV AKA nothing
+I HAS A nothing b
+YO b
+
+TEH BUKKIT UV B00L b AKA boolz
+TEH BUKKIT UV B00L b2 KAR k1 AKA boolkar
+
+BTW THESE ARE ANOTHER FORM OF FUNCTION DECLARATIONS
+I CAN say
+    YO "this is bad"
+SRSLY
+
+I CAN notsay
+    YO "this is bad"
+    YO "very very bad"
+SRSLY
+
+I CAN talk WIF UR YARN kitty0
+    YO "here kitty kitty"
+SRSLY
+
+I CAN play WIF UR YARN kitty1
+    YO "here kitty kitty"
+    YO "bad kitty"
+SRSLY
+
+I CAN run WIF UR YARN kitty2 AN B00L angrydog
+    YO "run kitty run"
+SRSLY
+
+I CAN eat UR YARN kitty3
+    YO "here kitty kitty"
+SRSLY
+
+I CAN purr WIF UR YARN kitty4
+    YO "purr"
+    YO "purr"
+SRSLY
+
+I CAN pet UR YARN kitty5 AN YARN kitty6
+    YO "run kitty run"
+SRSLY
+
+I CAN MAEK INT i0
+    YO "number 1"
+SRSLY
+
+I CAN MAEK INT i1
+    YO "number 1"
+    YO "number 2"
+SRSLY
+
+I CAN MAEK INT i2 UR YARN y2
+    YO "number 1"
+SRSLY
+
+I CAN MAEK INT i3 UR YARN y3
+    YO "number 1"
+    YO "number 2"
+SRSLY
+
+I CAN MAEK INT i4 WIF UR YARN y4
+    YO "number 1"
+SRSLY
+
+I CAN MAEK INT i5 WIF UR YARN y5
+    YO "number 1"
+    YO "number 2"
+SRSLY
+
+I CAN MAEK INT i6 WIF UR YARN y6 AN B00L b6
+    YO "number 1"
+SRSLY
+
+I CAN MAEK INT i7 WIF UR YARN y7 AN B00L b7
+    YO "number 1"
+    YO "number 2"
+SRSLY
+
+I CAN MAEK INT i8 WIF UR YARN y8 AN B00L b8 AN KAR k8
+    YO "number 1"
+SRSLY
+
+I CAN MAEK INT i9 WIF UR YARN y9 AN B00L b9 AN KAR k9
+    YO "number 1"
+    YO "number 2"
+SRSLY
+
+I CAN MAEK INT i10 UR YARN y10 AN B00L b10 AN KAR k10
+    YO "number 1"
+SRSLY
+
+I CAN MAEK INT i11 UR YARN y11 AN B00L b11 AN KAR k11
+    YO "number 1"
+    YO "number 2"
+SRSLY
+
+I CAN MAEK INT i12 UR YARN y12 AN B00L b12
+    YO "number 1"
+SRSLY
+
+I CAN MAEK INT i13 UR YARN y13 AN B00L b13
+    YO "number 1"
+    YO "number 2"
+SRSLY
+
+I CAN moresay
+    YO "this is bad"
+SRSLY
+
+BTW THESE TEST FUNCTION CALLS, BUKKITS, AND LISTS/ARRAYS
+I HAS A INT var0 ITZ 0
+I CAN MAEK INT var1 WIF UR INT var2
+    var2 R var2 UP 1
+    HEREZ UR var2
+SRSLY
+UPZORZ var0
+var0 R var1 (: var0 :)
+
+TEH BUKKIT UV NUMBR x NUMBR y NUMBR z AKA point
+I HAS A p ITZ point <: 3 4 5 :>
+YO p!!!x            BTW Should print 3
+I CAN MAEK point p1 WIF UR point p2
+    HEREZ UR p2
+SRSLY
+I HAS A NUMBR pointX
+pointX R p1(:p:)!!!x
+
+I HAS A list0 ITZ [: 1 2 3 :]
+YO list0 !? 2 ?!     BTW Should print 3
+I HAS A INT listItem1
+I CAN MAEK INT LIST l1 WIF UR INT LIST l2
+    HEREZ UR l2
+SRSLY
+listItem1 R l1(:list0:)!? 2 ?!
+
+KTHXBYE

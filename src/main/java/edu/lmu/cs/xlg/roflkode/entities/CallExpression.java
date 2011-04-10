@@ -19,7 +19,7 @@ public class CallExpression extends VariableExpression {
     }
 
     /**
-     * Returns the args.
+     * Returns the arguments
      */
     public List<Expression> getArgs() {
         return args;
@@ -33,20 +33,22 @@ public class CallExpression extends VariableExpression {
     }
 
     /**
-     * Analyzes the call (and its arguments).
+     * Analyzes the call.
      */
     public void analyze(Log log, SymbolTable table) {
 
-        // Analyze all the arguments
+        // Analyze all the arguments first.
         for (Expression a: args) {
             a.analyze(log, table);
         }
 
-        // Find out which function we're calling
+        // Find out which function we're calling.
         function = table.lookupFunction(functionName, log);
 
+        // If we can't find the function, just forget it.  The lookupFunction call above
+        // will have already logged the error.  We just want to bail now and not bother
+        // checking the return type and the arguments.
         if (function == null) {
-            // If we can't find the function, just forget it
             type = Type.ARBITRARY;
             return;
         }
@@ -58,6 +60,9 @@ public class CallExpression extends VariableExpression {
         } else {
             type = function.getReturnType();
         }
+
+        // Now check all the arguments against all the parameters.
+        function.assertCanBeCalledWith(args, log);
     }
 
     /**
