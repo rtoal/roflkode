@@ -77,7 +77,6 @@ public class Variable extends Declaration {
 
         // If an initializer is present, analyze it and check types.
         if (initializer != null) {
-            System.out.println("Analyzing initializer");
             initializer.analyze(log, table);
             if (typename == null) {
                 // Here is the type inference part

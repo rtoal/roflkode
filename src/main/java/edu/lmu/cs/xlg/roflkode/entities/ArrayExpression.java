@@ -35,7 +35,6 @@ public class ArrayExpression extends Expression {
      * based on the types of the components.
      */
     public void analyze(Log log, SymbolTable table) {
-System.out.println("Analyzing array exp");
         // First analyze the subexpressions
         for (Expression e: expressions) {
             e.analyze(log, table);
@@ -46,7 +45,6 @@ System.out.println("Analyzing array exp");
         Set<Type> types = new HashSet<Type>();
         for (Expression e: expressions) {
             types.add(e.getType());
-            System.out.println("Adding " + e.getType());
         }
 
         // Now see if we can make any sense out of the array of types.

@@ -7,8 +7,13 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * A unit test for the front end of the Roflkode compiler. It reads all the ".rk" files in the test
@@ -18,46 +23,62 @@ import org.junit.Test;
  * file name starts with anything else, the tester checks that the compiler can successfully parse
  * and perform static analysis without finding any errors.
  */
+@RunWith(Parameterized.class)
 public class FrontEndTest {
 
     private static final String TEST_DIRECTORY = "src/test/rk";
     private static final String EXTENSION = ".rk";
 
-    /**
-     * Tests all the files in the test directory.
-     */
-    @Test
-    public void testFrontEnd() throws IOException {
+    private String filename;
+
+    public FrontEndTest(String filename) {
+        this.filename = filename;
+    }
+
+    @Parameters
+    public static Collection<Object[]> getFiles() {
+
         String[] filenames = new File(TEST_DIRECTORY).list(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(EXTENSION);
             }
         });
 
-        for (String filename : filenames) {
-            System.out.println("Compiling " + filename + "... ");
-            Reader reader = new FileReader(TEST_DIRECTORY + "/" + filename);
+        Collection<Object[]> params = new ArrayList<Object[]>();
+        for (String name: filenames) {
+            params.add(new Object[] { name });
+        }
+        return params;
+    }
 
-            Compiler compiler = new Compiler();
-            compiler.setQuiet(true);
+    /**
+     * Tests that the current file does what it is supposed to when compiled.
+     */
+    @Test
+    public void testFrontEnd() throws IOException {
 
-            if (filename.startsWith("synerror")) {
-                // Expect at least one error during syntax checking
-                compiler.checkSyntax(reader);
-                assertTrue(compiler.getErrorCount() != 0);
+        System.out.println("Compiling " + filename + "... ");
+        Reader reader = new FileReader(TEST_DIRECTORY + "/" + filename);
 
-            } else if (filename.startsWith("semerror")) {
-                // Expect no syntax errors, but one or more semantic errors
-                compiler.checkSyntax(reader);
-                assertTrue(compiler.getErrorCount() == 0);
-                compiler.checkSemantics(reader);
-                assertTrue(compiler.getErrorCount() != 0);
+        Compiler compiler = new Compiler();
+        compiler.setQuiet(true);
 
-            } else {
-                // Expect no errors even after all semantic checks
-                compiler.checkSemantics(reader);
-                assertTrue(compiler.getErrorCount() == 0);
-            }
+        if (filename.startsWith("synerror")) {
+            // Expect at least one error during syntax checking
+            compiler.checkSyntax(reader);
+            assertTrue("Supposed to have syntax errors", compiler.getErrorCount() != 0);
+
+        } else if (filename.startsWith("semerror")) {
+            // Expect no syntax errors, but one or more semantic errors
+            compiler.checkSyntax(reader);
+            assertTrue("Supposed to have NO syntax errors", compiler.getErrorCount() == 0);
+            compiler.checkSemantics(reader);
+            assertTrue("Supposed to have semantic errors", compiler.getErrorCount() != 0);
+
+        } else {
+            // Expect no errors even after all semantic checks
+            compiler.checkSemantics(reader);
+            assertTrue("Supposed to be error free", compiler.getErrorCount() == 0);
         }
     }
 }
