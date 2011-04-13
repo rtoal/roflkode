@@ -89,38 +89,18 @@ public abstract class Entity {
      * Returns a short string containing this entity's id.
      */
     public String toString() {
-        return "$e" + all.get(this);
+        return "#" + all.get(this);
     }
 
     /**
-     * Writes a description of all entities reachable from the given entity, one per line, to the
-     * given writer. The description includes its id, class name, and all non-static attributes with
-     * non-null values.
+     * Writes a concise line with the entity's id number, class, and non-null properties.  For any
+     * property that is itself an entity, or a collection of entities, only the entity id is
+     * written.
      */
-    public static void dump(PrintWriter writer, Entity e) {
-        Set<Entity> used = new HashSet<Entity>();
-        dump(writer, e, used);
-        // dump(writer, Type.ARBITRARY, used);
-        // dump(writer, Type.N00B_TYPE, used);
-        // dump(writer, Type.ARRAY_OR_STRING, used);
-        // dump(writer, Literal.NULL, used);
-        // dump(writer, BooleanLiteral.FALSE, used);
-        // dump(writer, BooleanLiteral.TRUE, used);
-        // dump(writer, Variable.ARBITRARY, used);
-    }
-
-    /**
-     * Helper to do the actual writing and entity graph traversal.
-     */
-    private static void dump(PrintWriter writer, Entity e, Set<Entity> used) {
-        if (used.contains(e)) {
-            return;
-        }
-        used.add(e);
-
+    private static void writeDetailLine(PrintWriter writer, Entity e) {
         String classname = e.getClass().getName();
         String kind = classname.substring(classname.lastIndexOf('.') + 1);
-        writer.print(e + "\t[" + kind + "]");
+        writer.print(e + "\t" + kind + ":");
         List<Field> fields = relevantFields(e.getClass());
 
         for (Field field : fields) {
@@ -142,8 +122,32 @@ public abstract class Entity {
             }
         }
         writer.println();
+    }
+
+    /**
+     * Writes a description of all entities reachable from the given entity, one per line, to the
+     * given writer. The description includes its id, class name, and all non-static attributes with
+     * non-null values.
+     */
+    public static void dump(PrintWriter writer, Entity e) {
+        Set<Entity> used = new HashSet<Entity>();
+        dump(writer, e, used);
+    }
+
+    /**
+     * Helper to do the actual writing and entity graph traversal.
+     */
+    private static void dump(PrintWriter writer, Entity e, Set<Entity> used) {
+        if (used.contains(e)) {
+            return;
+        }
+        used.add(e);
+
+        writeDetailLine(writer, e);
+        List<Field> fields = relevantFields(e.getClass());
 
         for (Field field : fields) {
+            field.setAccessible(true);
             if ((field.getModifiers() & Modifier.STATIC) != 0)
                 continue;
             try {
@@ -187,5 +191,12 @@ public abstract class Entity {
             attributes.addAll(relevantFields(c.getSuperclass()));
         }
         return attributes;
+    }
+
+    /**
+     * A little interface to implement to navigate the semantic graph.
+     */
+    public static interface Visitor {
+        public void visit(Entity e);
     }
 }
