@@ -80,7 +80,7 @@ TOKEN: {
     < STRINGLIT:
         "\""
         (
-            ~["'", ":" ,"\u0000"-"\u001f", "\u007f"-"\u009f"]
+            ~["\"", ":" ,"\u0000"-"\u001f", "\u007f"-"\u009f"]
         |
             ":" ( [")", ">", ":", "'", "\""] | <UNICODE_SPEC> )
         )*
@@ -166,12 +166,13 @@ Variable parseVardec(): {
     String t = null;
     Token v = null;
     Expression e = null;
+    boolean constant = false;
 }{
     "I" "HAS" "A"
     (LOOKAHEAD (parseType() <ID>) t = parseType())?
     v = <ID>
-    ("ITZ" ("4EVER")? e = parseExp())?
-    {return new Variable(v.image, t, e);}
+    ("ITZ" ("4EVER" {constant = true;})? e = parseExp())?
+    {return new Variable(v.image, t, e, constant);}
 }
 
 String parseType(): {
@@ -238,10 +239,10 @@ void parseParams(List<Variable> params): {
     Token p;
 }{
     ("WIF")? "UR" t = parseType() p = <ID>
-    {params.add(new Variable(p.image, t, null));}
+    {params.add(new Variable(p.image, t, null, false));}
     (
         "AN" t = parseType() p = <ID>
-        {params.add(new Variable(p.image, t, null));}
+        {params.add(new Variable(p.image, t, null, false));}
     )*
 }
 

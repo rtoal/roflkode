@@ -63,7 +63,7 @@ public abstract class Expression extends Entity {
 
     void assertBoolean(String context, Log log) {
         if (!(type == Type.B00L)) {
-            log.error("non.boolean", context);
+            log.error("non.boolean", context, type);
         }
     }
 

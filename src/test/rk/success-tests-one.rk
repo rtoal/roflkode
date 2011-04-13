@@ -1,0 +1,172 @@
+
+
+BTW DIS ARE WEAR DA STUFFZ START
+HAI
+
+CAN HAS maffz? BTW NO MAFFZ FOR JOO
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW VARDEC TESTS LOL
+
+I HAS A INT intTest ITZ 5
+I HAS A NUMBR numbrTest ITZ 7.0
+I HAS A YARN yarnTest ITZ "test"
+I HAS A B00L boolTest ITZ WIN
+I HAS A KAR karTest ITZ 'c' BTW FOR CAT LOL
+
+I HAS A intThing ITZ 6
+I HAS A numbrThing ITZ 9.2
+I HAS A yarnThing ITZ "test"
+I HAS A boolThing ITZ WIN
+I HAS A karThing ITZ '!'
+
+I HAS A INT i
+I HAS A NUMBR n
+I HAS A YARN y
+I HAS A B00L b
+I HAS A KAR k
+
+I HAS A YARN LIST yarnListTest ITZ [: "test" "one" "CAT!" :]
+I HAS A INT LIST intListTest ITZ [: 7 8 9 :] BTW WHY 9 AFRAID OF 7
+
+I HAS A yarnListThing ITZ [: "test" "one" "CAT!" :]
+I HAS A intListThing ITZ [: 7 8 9 :] BTW WHY 9 AFRAID OF 7
+BTW DIS FAILZ: intListThing !?0?! R 0
+
+I HAS A YARN LIST yl
+I HAS A INT LIST il
+
+I HAS A FOREVERFIVE ITZ 4EVER 5
+I HAS A FOREVERJIVE ITZ 4EVER "JIVE"
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW BUKKIT TEST
+
+TEH BUKKIT UV
+  YARN arang
+  INT blah
+AKA BANGARANG
+
+BTW DESE SUX BUT DEY SHOULDNT
+BTW  I HAS A bang ITZ BANGARANG <: "a bangarang!" 5 :>
+BTW  YO bang!!!arang
+BTW  UPZORZ bang!!!blah
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW SIMPLE STATEMENT TESTS
+
+YO "THIS ARE A TEST YO!"
+UPZORZ intTest
+NERFZORZ intTest
+numbrTest R 5.9
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW MODIFIER TESTS
+
+boolTest R WIN IF numbrTest PWNS intTest
+boolTest R FAIL CEPT IF numbrTest PWNED BY OR SAEM AS intTest
+
+UPZORZ intTest WHIEL intTest PWNED BY numbrTest
+DIAF "JOO SUX" TIL intTest SAEM AS numbrTest BTW LOL
+
+NERFZORZ intTest IF intTest PWNS OR SAEM AS numbrTest
+DIAF "N00B" IF yarnTest SAEM AS N00B
+
+BTW DIVIDZ FAIL: UPZORZ intTest IF intTest DIVIDZ 5
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW CONDITIONAL TEST
+
+karTest SAEM AS yarnTest !? 0 ?!?
+WERD
+  YO "JOO WINZ"
+OIC
+
+yarnTest !?0?! SAEM AS yarnTest !? 1 ?!?
+WERD
+  YO "JOO WINZ"
+  YO "JOO WINZ MOER"
+MEBBE yarnTest !?0?! SAEM AS karTest
+  UPZORZ intTest
+  NERFZORZ intTest BTW NO UPZ FOR JOO
+MEBBE FAIL
+  YO "HOW I GET HERE?!!?!???!"
+OIC
+
+numbrTest PWNS intTest?
+WERD
+  DIAF "UBERN00B"
+MEBBE WIN
+  DIAF "STILLN00B"
+NO WAI
+  DIAF "BAI"
+OIC
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW SWITCH TEST
+
+BTW CASES NOT CAUGHT UNDER SYNTAXZ
+karTest WTF?
+  OMG 'a', YO "A WASSUP?", YO "A FOR APPLE", intTest R 5
+  OMG 'b', YO "B KARFUL"
+  OMG 'c', YO "NAO I C!", UPZORZ intTest
+  OMGWTF, YO "IF YOU NOT A B C, YO NOT NOTHING."
+OIC
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW LOOPZ TEST
+
+I HAS A you ITZ "you"
+I HAS A home ITZ "THAT!"
+I HAS A food ITZ 10
+I HAS A dusk ITZ 600
+I HAS A dawn ITZ 1800
+
+IM IN UR house TIL you SAEM AS home
+  YO "ANYONE HOME?"
+  you R you ~~ home
+  GTFO house IF food PWNED BY 0
+  HWGA house BTW HA!
+LOL
+
+BTW DESE ARE REALLY FUNNY
+IM IN UR kitchen NERFIN food FROM dusk TO dawn
+  YO "OMNOMNOMNOM"
+  YO "OMOMOMOMOMOMOMOONONONONOMOMONOM"
+  YO "ATE TOO MUCH"
+LOL
+
+IM IN UR room UPPIN you THRU [: 1 2 888 34 :]
+  YO "OMNOMNOMNOM"
+  YO "OMOMOMOMOMOMOMOONONONONOMOMONOM"
+  YO "ATE TOO MUCH"
+LOL
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW TRY CATCH TEST
+
+PLZ intListTest !? 1000 ?! R 5
+AWSUM THX
+  YO "DAT WERKED? NO WAI!"
+  YO "OK BAI"
+O NOES
+  intListTest !?0 ?! R 0
+  YO "HOKAY" IF intListTest !?0?! SAEM AS 0
+MKAY
+
+
+BTW Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q) Q(^_^Q)
+BTW NAP AND EXCEPSHUN TEST
+
+BRB 500 BTW (v_v)
+FACEPALM "ONE YARN" "TWO YARNS"
+
+KTHXBYE

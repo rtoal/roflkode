@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import edu.lmu.cs.xlg.roflkode.entities.Script;
+
 /**
  * A unit test for the front end of the Roflkode compiler. It reads all the ".rk" files in the test
  * resources directory. Whenever a filename starts with "synerror" the tester asserts that the
@@ -45,7 +47,7 @@ public class FrontEndTest {
         });
 
         Collection<Object[]> params = new ArrayList<Object[]>();
-        for (String name: filenames) {
+        for (String name : filenames) {
             params.add(new Object[] { name });
         }
         return params;
@@ -56,29 +58,34 @@ public class FrontEndTest {
      */
     @Test
     public void testFrontEnd() throws IOException {
+        try {
+            System.out.print("Testing " + filename + "... ");
+            Reader reader = new FileReader(TEST_DIRECTORY + "/" + filename);
 
-        System.out.println("Compiling " + filename + "... ");
-        Reader reader = new FileReader(TEST_DIRECTORY + "/" + filename);
+            Compiler compiler = new Compiler();
+            compiler.setQuiet(true);
 
-        Compiler compiler = new Compiler();
-        compiler.setQuiet(true);
+            if (filename.startsWith("synerror")) {
+                // Expect at least one error during syntax checking
+                compiler.checkSyntax(reader);
+                assertTrue("Supposed to have syntax errors", compiler.getErrorCount() != 0);
 
-        if (filename.startsWith("synerror")) {
-            // Expect at least one error during syntax checking
-            compiler.checkSyntax(reader);
-            assertTrue("Supposed to have syntax errors", compiler.getErrorCount() != 0);
+            } else if (filename.startsWith("semerror")) {
+                // Expect no syntax errors, but one or more semantic errors
+                Script script = compiler.checkSyntax(reader);
+                assertTrue("Supposed to have NO syntax errors", compiler.getErrorCount() == 0);
+                compiler.checkSemantics(script);
+                assertTrue("Supposed to have semantic errors", compiler.getErrorCount() != 0);
 
-        } else if (filename.startsWith("semerror")) {
-            // Expect no syntax errors, but one or more semantic errors
-            compiler.checkSyntax(reader);
-            assertTrue("Supposed to have NO syntax errors", compiler.getErrorCount() == 0);
-            compiler.checkSemantics(reader);
-            assertTrue("Supposed to have semantic errors", compiler.getErrorCount() != 0);
-
-        } else {
-            // Expect no errors even after all semantic checks
-            compiler.checkSemantics(reader);
-            assertTrue("Supposed to be error free", compiler.getErrorCount() == 0);
+            } else {
+                // Expect no errors even after all semantic checks
+                compiler.checkSemantics(reader);
+                assertTrue("Supposed to be error free", compiler.getErrorCount() == 0);
+            }
+            System.out.println("PASS");
+        } catch (AssertionError e) {
+            System.out.println("FAIL: " + e.getMessage());
+            throw e;
         }
     }
 }

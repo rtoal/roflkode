@@ -41,9 +41,10 @@ public class SimpleVariableExpression extends VariableExpression {
     }
 
     /**
-     * Returns true, because simple variables are always writable in Roflkode.
+     * Returns whether the simple variable expression is writable, which it will be if and only
+     * if its referent is not marked constant.
      */
     public boolean isWritable() {
-       return true;
+       return !referent.isConstant();
     }
 }

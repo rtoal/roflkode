@@ -61,6 +61,7 @@ public class LoopStatement extends Declaration {
         // An indefinite (WHIEL or TIL) loop.
         if (condition != null) {
             condition.analyze(log, table);
+            condition.assertBoolean(loopType, log);
         }
 
         // A loop iterating through a collection - iteration variable has same type as collection

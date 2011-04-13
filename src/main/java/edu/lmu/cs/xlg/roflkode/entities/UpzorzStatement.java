@@ -21,5 +21,6 @@ public class UpzorzStatement extends Statement {
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         target.analyze(log, table);
         target.assertInteger("UPZORZ", log);
+        target.assertWritable(log);
     }
 }

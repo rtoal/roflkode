@@ -10,6 +10,7 @@ public class Variable extends Declaration {
     private String typename;
     private Expression initializer;
     private Type type;
+    private boolean constant;
 
     /**
      * An arbitrary variable, useful in semantic analysis to take the place of a variable that has
@@ -21,10 +22,11 @@ public class Variable extends Declaration {
     /**
      * Constructs a variable.
      */
-    public Variable(String name, String typename, Expression initializer) {
+    public Variable(String name, String typename, Expression initializer, boolean constant) {
         super(name);
         this.typename = typename;
         this.initializer = initializer;
+        this.constant = constant;
     }
 
     /**
@@ -58,6 +60,13 @@ public class Variable extends Declaration {
      */
     public Type getType() {
         return type;
+    }
+
+    /**
+     * Returns whether this variable is readonly.
+     */
+    public boolean isConstant() {
+        return constant;
     }
 
     /**

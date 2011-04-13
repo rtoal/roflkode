@@ -39,23 +39,27 @@ import javax.swing.tree.MutableTreeNode;
 
 import edu.lmu.cs.xlg.roflkode.entities.Entity;
 import edu.lmu.cs.xlg.roflkode.entities.Script;
-import edu.lmu.cs.xlg.roflkode.entities.SymbolTable;
 import edu.lmu.cs.xlg.roflkode.syntax.Parser;
+import edu.lmu.cs.xlg.translators.RoflkodeToCTranslator;
 import edu.lmu.cs.xlg.util.Log;
 
 /**
- * A simple GUI application for viewing the different things the ROFLKODE
- * compiler can do.
+ * A simple GUI application for viewing the different things the Roflkode compiler can do.
  *
- * The application has two panes.  The left is a simple text editor in
- * which one can edit a ROFLKODE program, load one from the file system,
- * and save to the file system.  The right shows a view of the program
- * in response to a user selection action.  The user can choose to see
+ * The application has two panes.  The left is a simple text editor in which one can edit a Roflkode
+ * script, load one from the file system, and save to the file system.  The right shows a view of
+ * the script in response to a user selection action.  The user can choose to see
  * <ul>
  *   <li>The abstract syntax tree
  *   <li>The semantic graph
- *   <li>The squid
+ *   <li>The translation into C
+ * </ul>
+ *
+ * The following are planned for the future:
+ * <ul>
+ *   <li>A tuple or stack-based intermediate representation
  *   <li>The generated assembly language
+ *   <li>A translation into Ruby or Java
  *   <li>The executable file
  * </ul>
  */
@@ -129,33 +133,9 @@ public class Viewer extends JFrame {
             public void actionPerformed(ActionEvent e) {viewSemanticGraph();}
         };
 
-//        Action quadsAction = new AbstractAction("Quads") {
-//            {
-//                putValue(Action.ACCELERATOR_KEY, getKeyStroke("F3"));
-//            }
-//            public void actionPerformed(ActionEvent e) {viewQuads();}
-//        };
-//
-//        Action optimizeAction = new AbstractAction("Optimize") {
-//            {
-//                putValue(Action.ACCELERATOR_KEY, getKeyStroke("F4"));
-//            }
-//            public void actionPerformed(ActionEvent e) {viewOptimizedQuads();}
-//        };
-//
-//        Action assemblyAction = new AbstractAction("Assembly") {
-//            {
-//                putValue(Action.ACCELERATOR_KEY, getKeyStroke("F5"));
-//            }
-//            public void actionPerformed(ActionEvent e) {viewAssembly();}
-//        };
-//
-//        Action executableAction = new AbstractAction("Executable") {
-//            {
-//                putValue(Action.ACCELERATOR_KEY, getKeyStroke("F11"));
-//            }
-//            public void actionPerformed(ActionEvent e) {viewExecutable();}
-//        };
+        Action makeTheCAction = new AbstractAction("-> C") {
+            public void actionPerformed(ActionEvent e) {viewCTranslation();}
+        };
 
         fileMenu.setText("File");
         fileMenu.add(newAction);
@@ -165,13 +145,9 @@ public class Viewer extends JFrame {
         fileMenu.add(quitAction);
         menuBar.add(fileMenu);
 
-        //viewMenu.setText("View");
         menuBar.add(new JButton(syntaxAction));
         menuBar.add(new JButton(semanticsAction));
-//        viewMenu.add(quadsAction);
-//        viewMenu.add(optimizeAction);
-//        viewMenu.add(assemblyAction);
-//        viewMenu.add(executableAction);
+        menuBar.add(new JButton(makeTheCAction));
         menuBar.add(viewMenu);
         setJMenuBar(menuBar);
 
@@ -185,7 +161,7 @@ public class Viewer extends JFrame {
         splitPane.setDividerLocation(480);
         getContentPane().add(splitPane, BorderLayout.CENTER);
 
-        setTitle("ROFLKODE Viewer");
+        setTitle("Roflkode Viewer");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1024, 712);
     }
@@ -204,8 +180,7 @@ public class Viewer extends JFrame {
 
         StringBuffer buffer = new StringBuffer();
         try {
-            BufferedReader in = new BufferedReader(
-                new FileReader(currentFile.getCanonicalPath()));
+            BufferedReader in = new BufferedReader(new FileReader(currentFile.getCanonicalPath()));
             String line;
             while ((line = in.readLine()) != null) {
                 buffer.append(line).append("\n");
@@ -223,8 +198,7 @@ public class Viewer extends JFrame {
         }
 
         try {
-            BufferedWriter out = new BufferedWriter(
-                new FileWriter(currentFile.getCanonicalPath()));
+            BufferedWriter out = new BufferedWriter(new FileWriter(currentFile.getCanonicalPath()));
             out.write(source.getText());
             out.close();
             view.setText("File saved");
@@ -252,11 +226,9 @@ public class Viewer extends JFrame {
             view.setText(errors.toString());
         } else {
             try {
-                viewPane.setViewportView(
-                    new JTree(makeTree(script, "")));
+                viewPane.setViewportView(new JTree(makeTree(script, "")));
             } catch (IllegalStateException e) {
-                view.setText("Internal error: Syntax tree has cycles\n"
-                    + e.getMessage());
+                view.setText("Internal error: Syntax tree has cycles\n" + e.getMessage());
             }
         }
     }
@@ -272,45 +244,16 @@ public class Viewer extends JFrame {
             view.setText(writer.toString());
         }
     }
-//
-//    private void viewQuads() {
-//        viewPane.setViewportView(view);
-//        UserSubroutine main = translate();
-//        if (log.getErrorCount() > 0) {
-//            view.setText(errors.toString());
-//        } else {
-//            StringWriter writer = new StringWriter();
-//            main.dump(new PrintWriter(writer));
-//            view.setText(writer.toString());
-//        }
-//    }
-//
-//    private void viewOptimizedQuads() {
-//        viewPane.setViewportView(view);
-//        UserSubroutine main = optimize();
-//        if (log.getErrorCount() > 0) {
-//            view.setText(errors.toString());
-//        } else {
-//            StringWriter writer = new StringWriter();
-//            main.dump(new PrintWriter(writer, true));
-//            view.setText(writer.toString());
-//        }
-//    }
-//
-//    private void viewAssembly() {
-//        viewPane.setViewportView(view);
-//        Writer assemblyWriter = assemble();
-//        if (log.getErrorCount() > 0) {
-//            view.setText(errors.toString());
-//        } else {
-//            view.setText(assemblyWriter.toString());
-//        }
-//    }
-//
-//    private void viewExecutable() {
-//        viewPane.setViewportView(view);
-//        view.setText("Executable view not yet implemented");
-//    }
+
+    private void viewCTranslation() {
+        viewPane.setViewportView(view);
+        String c = translateToC();
+        if (log.getErrorCount() > 0) {
+            view.setText(errors.toString());
+        } else {
+            view.setText(c);
+        }
+    }
 
     // Wrappers for compiler operations
 
@@ -327,27 +270,12 @@ public class Viewer extends JFrame {
         script.analyze(log);
         return script;
     }
-//
-//    private UserSubroutine translate() {
-//        Program program = analyze();
-//        if (log.getErrorCount() > 0) return null;
-//        return new CarlosToSquidTranslator(4, 8).translateProgram(program);
-//    }
-//
-//    private UserSubroutine optimize() {
-//        UserSubroutine main = translate();
-//        if (log.getErrorCount() > 0) return null;
-//        new Optimizer().optimizeSubroutine(main);
-//        return main;
-//    }
-//
-//    private Writer assemble() {
-//        UserSubroutine main = optimize();
-//        if (log.getErrorCount() > 0) return null;
-//        Writer writer = new StringWriter();
-//        SquidToNasmTranslator.generate(main, writer, "Carlos");
-//        return writer;
-//    }
+
+    private String translateToC() {
+        Script script = analyze();
+        if (log.getErrorCount() > 0) return null;
+        return new RoflkodeToCTranslator().toC(script);
+    }
 
     // Syntax tree builder
 
@@ -390,8 +318,7 @@ public class Viewer extends JFrame {
                     }
                 } else {
                     // Simple attribute, attach description to node name
-                    node.setUserObject(node.getUserObject()
-                        + "  " + name + "=\"" + value + "\"");
+                    node.setUserObject(node.getUserObject() + "  " + name + "=\"" + value + "\"");
                 }
             } catch (IllegalAccessException cannotHappen) {
             }
@@ -400,9 +327,8 @@ public class Viewer extends JFrame {
     }
 
     /**
-     * Returns a list of all non-private fields of class c, together
-     * with fields of its ancestor classes, assuming that c is
-     * a descendant class of Entity.
+     * Returns a list of all non-private fields of class c, together with fields of its ancestor
+     * classes, assuming that c is a descendant class of Entity.
      */
     private static List<Field> relevantFields(Class<?> c) {
         ArrayList<Field> attributes = new ArrayList<Field>();

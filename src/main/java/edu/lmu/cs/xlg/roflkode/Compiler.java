@@ -44,7 +44,7 @@ public class Compiler {
     }
 
     /**
-     * Checks the syntax of a Roflkode script.
+     * Checks the syntax of a Roflkode script, given a reader object.
      *
      * @param reader
      *            the source
@@ -63,10 +63,25 @@ public class Compiler {
     }
 
     /**
+     * Checks the static semantics of a Roflkode script object, generally one already produced from
+     * a parse.
+     *
+     * @param script
+     *            Script object to analyze
+     * @return the (checked) semantic graph if successful, or null if there were any syntax or
+     *         static semantic errors
+     */
+    public Script checkSemantics(Script script) {
+        log.message("semantics.checking");
+        script.analyze(log);
+        return script;
+    }
+
+    /**
      * Checks the syntax and static semantics of a Roflkode program from a file.
      *
-     * @param name
-     *            base name (no .carlos extension) of source file
+     * @param reader
+     *            the source
      * @return the (checked) semantic graph if successful, or null if there were any syntax or
      *         static semantic errors
      */
