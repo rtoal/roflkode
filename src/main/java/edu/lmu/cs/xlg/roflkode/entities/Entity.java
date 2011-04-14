@@ -86,6 +86,13 @@ public abstract class Entity {
     }
 
     /**
+     * Returns the integer id of this entity.
+     */
+    public Integer getId() {
+        return all.get(this);
+    }
+
+    /**
      * Returns a short string containing this entity's id.
      */
     public String toString() {
@@ -97,11 +104,11 @@ public abstract class Entity {
      * property that is itself an entity, or a collection of entities, only the entity id is
      * written.
      */
-    private static void writeDetailLine(PrintWriter writer, Entity e) {
-        String classname = e.getClass().getName();
+    private void writeDetailLine(PrintWriter writer) {
+        String classname = getClass().getName();
         String kind = classname.substring(classname.lastIndexOf('.') + 1);
-        writer.print(e + "\t" + kind + ":");
-        List<Field> fields = relevantFields(e.getClass());
+        writer.print(this + "\t" + kind + ":");
+        List<Field> fields = relevantFields(getClass());
 
         for (Field field : fields) {
             field.setAccessible(true);
@@ -110,7 +117,7 @@ public abstract class Entity {
             }
             try {
                 String name = field.getName();
-                Object value = field.get(e);
+                Object value = field.get(this);
                 if (value == null) {
                     continue;
                 }
@@ -125,44 +132,62 @@ public abstract class Entity {
     }
 
     /**
-     * Writes a description of all entities reachable from the given entity, one per line, to the
-     * given writer. The description includes its id, class name, and all non-static attributes with
-     * non-null values.
+     * Writes a description of all entities reachable from this entity, one per line, to the
+     * given writer. The description includes its id, class name, and all non-static attributes
+     * with non-null values.
      */
-    public static void dump(PrintWriter writer, Entity e) {
-        Set<Entity> used = new HashSet<Entity>();
-        dump(writer, e, used);
+    public void printEntityGraph(final PrintWriter writer) {
+        traverse(new Visitor() {
+            public void visit(Entity e) {
+                e.writeDetailLine(writer);
+            }
+        });
     }
 
     /**
-     * Helper to do the actual writing and entity graph traversal.
+     * A little interface to implement to navigate the semantic graph.
      */
-    private static void dump(PrintWriter writer, Entity e, Set<Entity> used) {
-        if (used.contains(e)) {
+    public static interface Visitor {
+        public void visit(Entity e);
+    }
+
+    /**
+     * Traverses the entity graph beginning at e, applying visitor v.
+     */
+    public void traverse(Visitor v) {
+        Set<Entity> visited = new HashSet<Entity>();
+        traverse(v, visited);
+    }
+
+    /**
+     * Traverses the entity graph beginning at e, applying visitor v, skipping the ones already
+     * in the visited set.
+     */
+    private void traverse(Visitor v, Set<Entity> visited) {
+        if (visited.contains(this)) {
             return;
         }
-        used.add(e);
+        visited.add(this);
 
-        writeDetailLine(writer, e);
-        List<Field> fields = relevantFields(e.getClass());
+        v.visit(this);
 
-        for (Field field : fields) {
+        for (Field field : relevantFields(getClass())) {
             field.setAccessible(true);
             if ((field.getModifiers() & Modifier.STATIC) != 0)
                 continue;
             try {
-                Object value = field.get(e);
+                Object value = field.get(this);
                 if (value == null) {
                     continue;
                 }
                 if (value instanceof Entity) {
-                    dump(writer, (Entity) value, used);
+                    Entity.class.cast(value).traverse(v, visited);
                 } else if (value.getClass().isArray()) {
-                    dump(writer, Arrays.asList((Object[]) value), used);
+                    traverse(Arrays.asList((Object[]) value), v, visited);
                 } else if (value instanceof Collection<?>) {
-                    dump(writer, (Collection<?>) value, used);
+                    traverse((Collection<?>) value, v, visited);
                 } else if (value instanceof Map<?, ?>) {
-                    dump(writer, ((Map<?, ?>) value).values(), used);
+                    traverse(((Map<?, ?>) value).values(), v, visited);
                 }
             } catch (IllegalAccessException cannotHappen) {
             }
@@ -170,12 +195,12 @@ public abstract class Entity {
     }
 
     /**
-     * Writes information for all entities in the collection iterated over by the given iterator.
+     * Traverses a collection of entities.
      */
-    private static void dump(PrintWriter writer, Iterable<?> i, Set<Entity> used) {
-        for (Object object : i) {
+    private static void traverse(Iterable<?> iterable, Visitor v, Set<Entity> used) {
+        for (Object object : iterable) {
             if (object instanceof Entity) {
-                dump(writer, (Entity) object, used);
+                Entity.class.cast(object).traverse(v, used);
             }
         }
     }
@@ -184,19 +209,12 @@ public abstract class Entity {
      * Returns a list of all non-private fields of class c, together with fields of its ancestor
      * classes, assuming that c is a descendant class of Entity.
      */
-    private static List<Field> relevantFields(Class<?> c) {
+    public static List<Field> relevantFields(Class<?> c) {
         List<Field> attributes = new ArrayList<Field>();
         attributes.addAll(Arrays.asList(c.getDeclaredFields()));
         if (c.getSuperclass() != Entity.class) {
             attributes.addAll(relevantFields(c.getSuperclass()));
         }
         return attributes;
-    }
-
-    /**
-     * A little interface to implement to navigate the semantic graph.
-     */
-    public static interface Visitor {
-        public void visit(Entity e);
     }
 }

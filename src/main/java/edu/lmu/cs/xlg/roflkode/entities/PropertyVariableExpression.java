@@ -34,6 +34,13 @@ public class PropertyVariableExpression extends VariableExpression {
     }
 
     /**
+     * Returns the property.
+     */
+    public BukkitType.Property getProperty() {
+        return property;
+    }
+
+    /**
      * Analyzes this variable, checking that the variable expression before the dot has a type that
      * is a bukkit; that the property exists, etc.
      */

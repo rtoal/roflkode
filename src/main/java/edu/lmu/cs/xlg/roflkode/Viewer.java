@@ -18,10 +18,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -240,7 +237,7 @@ public class Viewer extends JFrame {
             view.setText(errors.toString());
         } else {
             StringWriter writer = new StringWriter();
-            Entity.dump(new PrintWriter(writer), script);
+            script.printEntityGraph(new PrintWriter(writer));
             view.setText(writer.toString());
         }
     }
@@ -277,8 +274,6 @@ public class Viewer extends JFrame {
         return new RoflkodeToCTranslator().toC(script);
     }
 
-    // Syntax tree builder
-
     /**
      * Returns a syntax tree for the hierarchy rooted at entity e.
      * Each node will have the name "prefix: classname" where prefix
@@ -297,7 +292,7 @@ public class Viewer extends JFrame {
         );
 
         // Add all the children
-        for (Field field: relevantFields(e.getClass())) {
+        for (Field field: Entity.relevantFields(e.getClass())) {
             try {
                 field.setAccessible(true);
                 String name = field.getName();
@@ -324,19 +319,6 @@ public class Viewer extends JFrame {
             }
         }
         return node;
-    }
-
-    /**
-     * Returns a list of all non-private fields of class c, together with fields of its ancestor
-     * classes, assuming that c is a descendant class of Entity.
-     */
-    private static List<Field> relevantFields(Class<?> c) {
-        ArrayList<Field> attributes = new ArrayList<Field>();
-        attributes.addAll(Arrays.asList(c.getDeclaredFields()));
-        if (c.getSuperclass() != Entity.class) {
-            attributes.addAll(relevantFields(c.getSuperclass()));
-        }
-        return attributes;
     }
 
     /**
