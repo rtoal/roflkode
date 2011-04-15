@@ -1,9 +1,10 @@
 package edu.lmu.cs.xlg.translators;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.lmu.cs.xlg.roflkode.entities.AssignmentStatement;
+import edu.lmu.cs.xlg.roflkode.entities.ArrayType;
 import edu.lmu.cs.xlg.roflkode.entities.BukkitType;
 import edu.lmu.cs.xlg.roflkode.entities.BukkitType.Property;
 import edu.lmu.cs.xlg.roflkode.entities.Entity;
@@ -24,57 +25,74 @@ import edu.lmu.cs.xlg.roflkode.entities.VariableExpression;
 
 public class RoflkodeToCTranslator {
 
-    private String typename(Type type) {
+    /**
+     * Writes the C string representation of a Roflkode type.  Notice that YARNs, Bukkits, and
+     * arrays are all reference types in Roflkode, so these are all represented as pointer types
+     * in C.
+     */
+    private void translateType(Type type, PrintWriter writer) {
         if (type == Type.INT) {
-            return "int";
+            writer.print("int");
         } else if (type == Type.NUMBR) {
-            return "double";
+            writer.print("double");
         } else if (type == Type.YARN) {
-            return "char *";
+            writer.print("wchar_t*");
         } else if (type == Type.B00L) {
-            return "int";
+            writer.print("int");
         } else if (type == Type.KAR) {
-            return "wchar_t";
+            writer.print("wchar_t");
         } else if (type instanceof BukkitType) {
-            return "struct _Bukkit" + type.getId();
+            writer.print("struct _Bukkit" + type.getId() + "*");
+        } else if (type instanceof ArrayType) {
+            translateType(ArrayType.class.cast(type).getBaseType(), writer);
+            writer.print("*");
         } else {
-            return "TODO";
+            // Should have any real types here, but just in case...
+            writer.print("int");
         }
     }
 
-    private String variableName(Variable variable) {
-        return "_v" + variable.getId();
+    /**
+     * Writes the C string representation of a Roflkode variable.
+     */
+    private void translateVariableName(Variable variable, PrintWriter writer) {
+        writer.print("_v" + variable.getId());
     }
 
-    private String propertyName(Property property) {
-        return "_p" + property.getId();
+    /**
+     * Writes the C string representation of a Roflkode bukkit property.
+     */
+    private void translatePropertyName(Property property, PrintWriter writer) {
+        writer.print("_p" + property.getId());
     }
 
     /**
      * Returns a string representation, in the language C, of the given Roflkode script.
      * Precondition: The script has already been semantically analyzed and is error-free.
      */
-    public String toC(Script script) {
+    public void translateScript(Script script, PrintWriter writer) {
 
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("#include <stdio.h>\n");
-        builder.append("#include <stdlib.h>\n");
-        builder.append("#include <math.h>\n");
+        writer.println("#include <stdio.h>");
+        writer.println("#include <stdlib.h>");
+        writer.println("#include <math.h>");
 
         // First fetch all the bukkit types.  Render declarations then definitions.
         List<BukkitType> bukkitTypes = fetchAllBukkitTypes(script);
 
         for (BukkitType b : bukkitTypes) {
-            builder.append(typename(b)).append(";\n");
+            writer.println("struct _Bukkit" + b.getId() + ";");
         }
+
         for (BukkitType b : bukkitTypes) {
-            builder.append(typename(b)).append("{\n");
+            writer.println("struct _Bukkit" + b.getId() + " {");
             for (Property p: b.getProperties()) {
-                builder.append("    ").append(typename(p.getType())).append(" ")
-                        .append(propertyName(p)).append(";\n");
+                writer.print("    ");
+                translateType(p.getType(), writer);
+                writer.print(" ");
+                translatePropertyName(p, writer);
+                writer.println(";");
             }
-            builder.append("};\n");
+            writer.println("};");
         }
 
         // Next fetch all the functions.  Render signatures then bodies.  Note that externs will
@@ -83,14 +101,17 @@ public class RoflkodeToCTranslator {
         // TODO
 
         // Finally put the statements of the top-level statements in the main() function.
-        writeMainFunction(script, builder);
-
-        return builder.toString();
+        writer.println("int main() {");
+        for (Statement statement: script.getStatements()) {
+            translateStatement(statement, writer, "    ");
+        }
+        writer.println("    return 0;");
+        writer.println("}");
     }
 
-    private List<BukkitType> fetchAllBukkitTypes(Script s) {
+    private List<BukkitType> fetchAllBukkitTypes(Script script) {
         final List<BukkitType> types = new ArrayList<BukkitType>();
-        s.traverse(new Visitor() {
+        script.traverse(new Visitor() {
             public void visit(Entity e) {
                 if (e.getClass() == BukkitType.class) {
                     types.add(BukkitType.class.cast(e));
@@ -100,73 +121,69 @@ public class RoflkodeToCTranslator {
         return types;
     }
 
-    private void writeMainFunction(Script script, StringBuilder builder) {
-        builder.append("int main() {\n");
-        for (Statement s: script.getStatements()) {
-            writeStatement(s, builder, "    ");
-        }
-        builder.append("}\n");
-    }
+    private void translateStatement(Statement s, PrintWriter writer, String indent) {
 
-    private void writeStatement(Statement s, StringBuilder builder, String indent) {
         if (s instanceof BukkitType || s instanceof Function) {
             // All bukkit types and functions go at the top level, so don't write them here
             return;
         }
 
-        builder.append(indent);
+        writer.print(indent);
+
         if (s instanceof Variable) {
-            writeVariable(Variable.class.cast(s), builder);
+            translateVariableDeclaration(Variable.class.cast(s), writer);
         } else if (s instanceof UpzorzStatement) {
-            builder.append("++");
-            writeVariableExpression(UpzorzStatement.class.cast(s).getTarget(), builder);
+            writer.append("++");
+            translateVariableExpression(UpzorzStatement.class.cast(s).getTarget(), writer);
         } else {
-            builder.append("TODO");
+            writer.print("TODO");
         }
-        builder.append("\n");
+        writer.println();
     }
 
-    private void writeVariable(Variable v, StringBuilder builder) {
+    private void translateVariableDeclaration(Variable v, PrintWriter writer) {
         if (v.isConstant()) {
-            builder.append("const ");
+            writer.print("const ");
         }
-        builder.append(typename(v.getType())).append(" ").append(variableName(v));
+        translateType(v.getType(), writer);
+        writer.print(" ");
+        translateVariableName(v, writer);
         if (v.getInitializer() != null) {
-            builder.append(" = ");
-            writeExpression(v.getInitializer(), builder);
+            writer.print(" = ");
+            translateExpression(v.getInitializer(), writer);
         }
-        builder.append(";");
+        writer.print(";");
     }
 
-    private void writeExpression(Expression e, StringBuilder builder) {
+    private void translateExpression(Expression e, PrintWriter writer) {
         if (e instanceof IntegerLiteral) {
-            builder.append(IntegerLiteral.class.cast(e).getValue());
+            writer.print(IntegerLiteral.class.cast(e).getValue());
         } else if (e instanceof NoobLiteral) {
-            builder.append("0");
+            writer.print("0");
         } else if (e instanceof VariableExpression) {
-            writeVariableExpression(VariableExpression.class.cast(e), builder);
+            translateVariableExpression(VariableExpression.class.cast(e), writer);
         } else {
-            builder.append("TODO");
+            writer.print("TODO");
         }
     }
 
-    private void writeVariableExpression(VariableExpression e, StringBuilder builder) {
+    private void translateVariableExpression(VariableExpression e, PrintWriter writer) {
         if (e instanceof SimpleVariableExpression) {
             SimpleVariableExpression v = SimpleVariableExpression.class.cast(e);
-            builder.append(variableName(v.getReferent()));
+            translateVariableName(v.getReferent(), writer);
         } else if (e instanceof PropertyVariableExpression) {
             PropertyVariableExpression v = PropertyVariableExpression.class.cast(e);
-            writeVariableExpression(v.getBukkit(), builder);
-            builder.append(".");
-            builder.append(propertyName(v.getProperty()));
+            translateVariableExpression(v.getBukkit(), writer);
+            writer.print(".");
+            translatePropertyName(v.getProperty(), writer);
         } else if (e instanceof IndexVariableExpression) {
             IndexVariableExpression v = IndexVariableExpression.class.cast(e);
-            writeVariableExpression(v.getArray(), builder);
-            builder.append("[");
-            writeExpression(v.getIndex(), builder);
-            builder.append("]");
+            translateVariableExpression(v.getArray(), writer);
+            writer.print("[");
+            translateExpression(v.getIndex(), writer);
+            writer.print("]");
         } else {
-            builder.append("TODO");
+            writer.print("TODO");
         }
     }
 }

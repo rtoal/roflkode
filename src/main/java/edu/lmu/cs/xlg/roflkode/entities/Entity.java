@@ -96,7 +96,7 @@ public abstract class Entity {
      * Returns a short string containing this entity's id.
      */
     public String toString() {
-        return "#" + all.get(this);
+        return "#" + getId();
     }
 
     /**
