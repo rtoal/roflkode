@@ -272,7 +272,7 @@ public class Viewer extends JFrame {
         Script script = analyze();
         if (log.getErrorCount() > 0) return null;
         StringWriter writer = new StringWriter();
-        new RoflkodeToCTranslator().translateScript(script, new PrintWriter(writer));
+        RoflkodeToCTranslator.translate(script, new PrintWriter(writer));
         return writer.toString();
     }
 
