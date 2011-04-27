@@ -77,11 +77,13 @@ public class RoflkodeToCTranslator {
         List<Function> functions = fetchAllFunctions(script);
 
         for (Function f: functions) {
-            writer.print("TODO - function ");
-            translateFunctionName(f);
-            writer.println(" goes here");
+            translateFunctionSignature(f);
+            writer.println(";");
         }
-        // TODO
+
+        for (Function f: functions) {
+            translateWholeFunction(f);
+        }
 
         // Finally put the statements of the top-level statements in the main() function.
         writer.println("int main() {");
@@ -138,7 +140,49 @@ public class RoflkodeToCTranslator {
      * Writes the C string representation of a Roflkode function.
      */
     private void translateFunctionName(Function function) {
-        writer.print("_f" + function.getId());
+        if (function.getBody() != null) {
+            writer.print("_f" + function.getId());
+        } else {
+            writer.print("__Roflkode__" + function.getName());
+        }
+    }
+
+    private void translateFunctionSignature(Function function) {
+        if (function.getReturnType() == null) {
+            writer.print("void");
+        } else {
+            translateType(function.getReturnType());
+        }
+        writer.print(" ");
+        translateFunctionName(function);
+        translateParameters(function.getParameters());
+    }
+
+    private void translateWholeFunction(Function function) {
+        if (function.getBody() == null) {
+            // Do nothing, the signature was already done and there is not body
+            return;
+        }
+        translateFunctionSignature(function);
+        writer.println(" {");
+        // TODO - all the statements here
+        writer.println("    TODO - BODY OF FUNCTION");
+        writer.println("}");
+    }
+
+    private void translateParameters(List<Variable> parameters) {
+        writer.print("(");
+        boolean first = true;
+        for (Variable v: parameters) {
+            if (!first) {
+                writer.print(", ");
+            }
+            translateType(v.getType());
+            writer.print(" ");
+            translateVariableName(v);
+            first = false;
+        }
+        writer.print(")");
     }
 
     private void translateStatement(Statement s, String indent) {
