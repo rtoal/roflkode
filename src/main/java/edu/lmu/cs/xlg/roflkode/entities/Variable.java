@@ -77,6 +77,7 @@ public class Variable extends Declaration {
         // If initializer is not present, then there had better be a type.
         if (initializer == null && typename == null) {
             log.error("intializer.or.type.required");
+            type = Type.ARBITRARY;
         }
 
         // The declaration may or may not have a type name.  Look it up if it does.
