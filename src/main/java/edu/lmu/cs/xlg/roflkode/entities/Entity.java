@@ -34,22 +34,26 @@ import java.util.Set;
  *         FacepalmStatement
  *         UpzorzStatement
  *         NerfzorzStatement
- *         CallStatement
  *         AssignmentStatement
- *         BreakStatement
+ *         GtfoStatement
  *         AgainStatement
  *         HerezStatement
+ *         DiafStatement
+ *         GimmehStatement
+ *         BrbStatement
+ *         CallStatement
  *         ModifiedSimpleStatement
- *         IfStatement
+ *         ConditionalStatement
  *         SwitchStatement
  *         LoopStatement
+ *         TryStatement
  *     Expression
  *         Literal
  *             NoobLiteral
  *             IntegerLiteral
  *             NumberLiteral
  *             BooleanLiteral
- *             CharacterLiteral
+ *             KarLiteral
  *             StringLiteral
  *         VariableExpression
  *             SimpleVariableExpression

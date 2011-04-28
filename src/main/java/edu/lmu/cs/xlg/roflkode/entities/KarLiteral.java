@@ -54,7 +54,7 @@ public class KarLiteral extends Literal {
                 else if (c == ':') result.add(0x3A);
                 else if (c == '(') {
                     int value = 0;
-                    for (; c != ')'; c = s.charAt(++pos)) {
+                    for (c = s.charAt(++pos); c != ')'; c = s.charAt(++pos)) {
                         value = 16 * value + Character.digit(c, 16);
                     }
                     result.add(value);
