@@ -1,0 +1,83 @@
+BTW Author: Jarod Long
+
+HAI
+
+BTW this is taken from an example in the spec.
+TEH BUKKIT UV NUMBR x NUMBR y AKA point
+
+BTW instantiate a bunch of simple variables.
+I HAS A var ITZ 5
+I HAS A B00L b ITZ WIN
+I HAS A KAR k ITZ 'k'
+I HAS A INT x ITZ 22
+I HAS A NUMBR n ITZ 3.14
+I HAS A YARN y ITZ 4EVER "meow"
+I HAS A point p ITZ point <: 0 4 :>
+
+YO p!!!x
+YO p!!!y
+
+BTW we should be able to call functions before they are declared.
+BTW leaving off the smileys doesn't work right now, but it is supposed do.
+f(::)
+
+BTW test function declarations.
+I CAN f
+    BTW we can reuse variable names in a new scope.
+    I HAS A NUMBR p ITZ n
+SRSLY
+
+I CAN print UR YARN y
+    YO y
+SRSLY
+
+I CAN MAEK INT bigger WIF UR INT i
+    HEREZ UR i UP 1
+SRSLY
+
+BTW test all the modifiers.
+print(: y :) IF b
+x R bigger(: x LEFTOVR 10 :) CEPT IF n PWNS 0.0
+x R bigger(: x :) WHIEL FAIL
+
+BTW the NERF operator fails.
+BTW x NERF 3 TIL x PWNS 100
+
+BTW test conditionals and relational operators.
+x PWNED BY OR SAEM AS 3?
+    WERD
+        NAA (n PWNED BY 33.3) ANALSO (p!!!x PWNS x ORELSE p!!!x PWNS n)?
+            WERD, DIAF
+        OIC
+    MEBBE x PWNS OR SAEM AS 20
+        x R x TIEMZ 5
+    MEBBE x PWNED BY 100
+        NERFZORZ x
+    MEBBE x SAEM AS 50
+        UPZORZ x
+    MEBBE x DIVIDZ 30
+        x R 30 OVR x
+        BRB 10.0
+    NO WAI
+        FACEPALM "error " ~~ y
+OIC
+
+BTW test switch statement and bitwise operators.
+x WTF?
+    OMG 0
+        x R x BITOR x LEFTOVR 100
+        BTW the BITZLEFT operator fails.
+        BTW x BITZLEFT 4
+    OMG 1
+        x R x BITAND 200
+        BTW the BITZRIGHT operator fails.
+        BTW x BITZRIGHT 4
+    OMGWTF
+        x R x BITXOR 300
+        BTW the BITZFLIP operator fails.
+        BTW BITZFLIP x
+OIC
+
+
+
+KTHXBYE

@@ -3,7 +3,7 @@ package edu.lmu.cs.xlg.roflkode.entities;
 import edu.lmu.cs.xlg.util.Log;
 
 /**
- * The Roflkode DIAF statement, which throws a string-valued expression.
+ * The Roflkode DIAF statement, which throws a optional string-valued expression.
  */
 public class DiafStatement extends Statement {
 
@@ -19,7 +19,9 @@ public class DiafStatement extends Statement {
 
     @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
-        expression.analyze(log, table);
-        expression.assertString("DIAF", log);
+        if (expression != null) {
+            expression.analyze(log, table);
+            expression.assertString("DIAF", log);
+        }
     }
 }

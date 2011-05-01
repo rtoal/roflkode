@@ -2,7 +2,9 @@ package edu.lmu.cs.xlg.translators;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.lmu.cs.xlg.roflkode.entities.AgainStatement;
 import edu.lmu.cs.xlg.roflkode.entities.ArrayExpression;
@@ -56,6 +58,14 @@ import edu.lmu.cs.xlg.roflkode.entities.YoStatement;
  * constructor and a new translator is created every time you call the static translate method.
  */
 public class RoflkodeToCTranslator {
+
+    private static Map<String, String> cBinaryOperator = new HashMap<String, String>() {{
+        put("ORELSE", "||");
+        put("ANALSO", "&&");
+        put("BITOR", "|");
+        put("BITAND", "&");
+        put("BITXOR", "^");
+    }};
 
     /**
      * Translates the given script, writing the target C program to the given writer.
@@ -181,6 +191,20 @@ public class RoflkodeToCTranslator {
     }
 
     /**
+     * Writes the C label for the top of the given loop.
+     */
+    private void translateLoopTop(LoopStatement s) {
+        writer.print("top" + s.getId());
+    }
+
+    /**
+     * Writes the C label for the top of the given loop.
+     */
+    private void translateLoopBottom(LoopStatement s) {
+        writer.print("bottom" + s.getId());
+    }
+
+    /**
      * Writes the function signature, in C, only.
      */
     private void translateFunctionSignature(Function function) {
@@ -282,7 +306,6 @@ public class RoflkodeToCTranslator {
             throw new RuntimeException("FATAL ERROR: TRANSLATOR DOESN'T KNOW ABOUT " +
                     s.getClass().getName());
         }
-        writer.println();
     }
 
     private void translateVariableDeclaration(Variable v, String indent) {
@@ -301,7 +324,34 @@ public class RoflkodeToCTranslator {
     }
 
     private void translateYoStatement(YoStatement s, String indent) {
-        writer.println(indent + "TODO_Yo_Statement");
+        for (Expression e: s.getExpressions()) {
+            writer.print(indent);
+            if (e.getType() == Type.B00L) {
+                writer.print("printf(");
+                translateExpression(e);
+                writer.println(" ? \"WIN\" : \"FAIL\");");
+            } else if (e.getType() == Type.KAR) {
+                writer.println("TODO_CODE_TO_PRINT_KAR");
+            } else if (e.getType() == Type.INT) {
+                writer.print("printf(\"%d\", ");
+                translateExpression(e);
+                writer.println(");");
+            } else if (e.getType() == Type.NUMBR) {
+                writer.print("printf(\"%g\", ");
+                translateExpression(e);
+                writer.println(");");
+            } else if (e.getType() == Type.YARN) {
+                writer.print("printf(\"%s\", ");
+                translateExpression(e);
+                writer.println(");");
+            } else if (e.getType() instanceof ArrayType) {
+                writer.println("TODO_CODE_TO_PRINT_ARRAY");
+            } else if (e.getType() instanceof BukkitType) {
+                writer.println("TODO_CODE_TO_PRINT_BUKKIT");
+            } else {
+                throw new RuntimeException("Unknown type made it to code generator");
+            }
+        }
     }
 
     private void translateFacepalmStatement(FacepalmStatement s, String indent) {
@@ -329,27 +379,45 @@ public class RoflkodeToCTranslator {
     }
 
     private void translateGtfoStatement(GtfoStatement s, String indent) {
-        writer.println(indent + "goto bottom_" + s.getLoop().getId() + ";");
+        if (s.getTarget() instanceof LoopStatement) {
+            writer.print(indent + "goto ");
+            translateLoopBottom(LoopStatement.class.cast(s.getTarget()));
+            writer.println(";");
+        } else {
+            writer.println(indent + "return;");
+        }
     }
 
     private void translateAgainStatement(AgainStatement s, String indent) {
-        writer.println(indent + "goto top_" + s.getLoop().getId() + ";");
+        writer.print(indent + "goto ");
+        translateLoopTop(s.getLoop());
+        writer.println(";");
     }
 
     private void translateHerezStatement(HerezStatement s, String indent) {
-        writer.println("return " + s.getExpression());
+        writer.print(indent + "return ");
+        translateExpression(s.getExpression());
+        writer.println(";");
     }
 
     private void translateDiafStatement(DiafStatement s, String indent) {
-        writer.println(indent + "TODO_Diaf_Statement");
+        writer.print(indent + "__Roflkode__Diaf(");
+        translateExpression(s.getExpression());
+        writer.println(");");
     }
 
     private void translateGimmehStatement(GimmehStatement s, String indent) {
-        writer.println(indent + "TODO_Gimmeh_Statement");
+        writer.print(indent + "__Roflkode__Gimmeh");
+        writer.print(s.getTarget().getType().getName().toLowerCase());
+        writer.print("(&");
+        translateExpression(s.getTarget());
+        writer.println(");");
     }
 
     private void translateBrbStatement(BrbStatement s, String indent) {
-        writer.println(indent + "TODO_Brb_Statement");
+        writer.print(indent + "__Roflkode__Brb(");
+        translateExpression(s.getExpression());
+        writer.println(");");
     }
 
     private void translateCallStatement(CallStatement s, String indent) {
@@ -385,9 +453,29 @@ public class RoflkodeToCTranslator {
     }
 
     private void translateLoopStatement(LoopStatement s, String indent) {
-        writer.println(indent + "top_" + s.getId() + ":");
-        writer.println(indent + "TODO_LOOP");
-        writer.println(indent + "bottom_" + s.getId() + ": ;");
+        writer.println(indent);
+        translateLoopTop(s);
+        writer.println(":");
+        if ("WHIEL".equals(s.getLoopType())) {
+            writer.print(indent + "if (!(");
+            translateExpression(s.getCondition());
+            writer.print(")) goto ");
+            translateLoopBottom(s);
+            writer.println(";");
+            translateBlock(s.getBody(), indent);
+            writer.print(indent + "goto ");
+            translateLoopTop(s);
+            writer.println(";");
+        } else if ("TIL".equals(s.getLoopType())) {
+
+        } else if (s.getCollection() != null) {
+            writer.println("TODO - THRU COLLECTION");
+        } else /* Has start and end */ {
+            writer.println("TO DO - FROM/TO RANGE");
+        }
+        writer.println(indent);
+        translateLoopBottom(s);
+        writer.println(": ;");
     }
 
     private void translateSwitchStatement(SwitchStatement s, String indent) {
@@ -459,7 +547,21 @@ public class RoflkodeToCTranslator {
     }
 
     private void translateBinaryExpression(BinaryExpression e) {
-        writer.print("TODO_BINARY_EXPRESSION");
+        writer.print("(");
+        if ("~~".equals(e.getOp())) {
+            writer.print("TODO_CONCAT_EXPRESSION");
+        } else if ("\\".equals(e.getOp())) {
+            translateExpression(e.getLeft());
+            writer.print("%");
+            translateExpression(e.getRight());
+            writer.print("!=0");
+        } else {
+            translateExpression(e.getLeft());
+            String op = cBinaryOperator.get(e.getOp());
+            writer.print(op == null ? e.getOp() : op);
+            translateExpression(e.getRight());
+        }
+        writer.print(")");
     }
 
     private void translateArrayExpression(ArrayExpression e) {
