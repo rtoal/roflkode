@@ -375,7 +375,7 @@ Statement parseSwitch(): {
 Statement parseLoop(): {
     Token t = null;
     String name = null;
-    String loopType;
+    String loopType = null;
     Expression condition = null;
     String iterator = null;
     Expression start = null;
@@ -383,7 +383,7 @@ Statement parseLoop(): {
     Expression collection = null;
     Block body;
 }{
-    "IM" "IN" "UR" t = <ID> {name = t.image;} (<BR>)*
+    "IM" "IN" "UR" t = <ID> {name = t.image;}
     (
         (t = "WHIEL" | t = "TIL") {loopType = t.image;} condition = parseExp()
     |
@@ -394,7 +394,7 @@ Statement parseLoop(): {
         |
             "THRU" collection = parseExp()
         )
-    )
+    )?
     (<BR>)+
     body = parseBlock()
     "LOL"

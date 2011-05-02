@@ -59,7 +59,8 @@ import edu.lmu.cs.xlg.roflkode.entities.YoStatement;
  */
 public class RoflkodeToCTranslator {
 
-    private static Map<String, String> cBinaryOperator = new HashMap<String, String>() {{
+    @SuppressWarnings("serial")
+    private static final Map<String, String> C_BINARY_OPERATORS = new HashMap<String, String>() {{
         put("ORELSE", "||");
         put("ANALSO", "&&");
         put("BITOR", "|");
@@ -470,8 +471,14 @@ public class RoflkodeToCTranslator {
 
         } else if (s.getCollection() != null) {
             writer.println("TODO - THRU COLLECTION");
-        } else /* Has start and end */ {
+        } else if (s.getStart() != null) {
             writer.println("TO DO - FROM/TO RANGE");
+        } else {
+            // Plain ol' loop
+            translateBlock(s.getBody(), indent);
+            writer.print(indent + "goto ");
+            translateLoopTop(s);
+            writer.println(";");
         }
         writer.println(indent);
         translateLoopBottom(s);
@@ -557,7 +564,7 @@ public class RoflkodeToCTranslator {
             writer.print("!=0");
         } else {
             translateExpression(e.getLeft());
-            String op = cBinaryOperator.get(e.getOp());
+            String op = C_BINARY_OPERATORS.get(e.getOp());
             writer.print(op == null ? e.getOp() : op);
             translateExpression(e.getRight());
         }
