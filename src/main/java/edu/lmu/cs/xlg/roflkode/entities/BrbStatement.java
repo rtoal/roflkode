@@ -19,7 +19,7 @@ public class BrbStatement extends Statement {
 
     @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
-        expression.analyze(log, table);
+        expression.analyze(log, table, function, inLoop);
         expression.assertArithmetic("BRB", log);
     }
 }

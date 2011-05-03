@@ -11,6 +11,7 @@ public class Variable extends Declaration {
     private Expression initializer;
     private Type type;
     private boolean constant;
+    private Integer level;
 
     /**
      * An arbitrary variable, useful in semantic analysis to take the place of a variable that has
@@ -69,10 +70,16 @@ public class Variable extends Declaration {
         return constant;
     }
 
+    public int getLevel() {
+        return level == null ? 0 : level;
+    }
+
     /**
      * Analyzes this variable.
      */
+    @Override
     public void analyze(Log log, SymbolTable table, Function owner, boolean inLoop) {
+        level = owner == null ? 0 : owner.getLevel();
 
         // If initializer is not present, then there had better be a type.
         if (initializer == null && typename == null) {
@@ -87,7 +94,7 @@ public class Variable extends Declaration {
 
         // If an initializer is present, analyze it and check types.
         if (initializer != null) {
-            initializer.analyze(log, table);
+            initializer.analyze(log, table, owner, inLoop);
             if (typename == null) {
                 // Here is the type inference part
                 type = initializer.type;

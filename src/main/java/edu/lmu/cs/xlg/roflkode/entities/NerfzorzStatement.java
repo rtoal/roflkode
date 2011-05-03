@@ -25,7 +25,7 @@ public class NerfzorzStatement extends Statement {
 
     @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
-        target.analyze(log, table);
+        target.analyze(log, table, function, inLoop);
         target.assertInteger("NERFZORZ", log);
     }
 }

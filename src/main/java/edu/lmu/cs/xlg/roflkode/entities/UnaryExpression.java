@@ -32,8 +32,9 @@ public class UnaryExpression extends Expression {
     /**
      * Analyzes this expression.
      */
-    public void analyze(Log log, SymbolTable table) {
-        operand.analyze(log, table);
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        operand.analyze(log, table, function, inLoop);
 
         if ("NAA".equals(op)) {
             operand.assertBoolean(op, log);

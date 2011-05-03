@@ -44,9 +44,9 @@ public class SwitchStatement extends Statement {
 
     @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
-        expression.analyze(log, table);
+        expression.analyze(log, table, function, inLoop);
         for (Arm arm: arms) {
-            arm.guard.analyze(log, table);
+            arm.guard.analyze(log, table, function, inLoop);
             arm.guard.assertAssignableTo(expression.type, log, "bad.case.type");
             arm.block.analyze(log, table, function, inLoop);
         }

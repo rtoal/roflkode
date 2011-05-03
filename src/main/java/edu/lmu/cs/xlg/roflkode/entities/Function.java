@@ -15,6 +15,7 @@ public class Function extends Declaration {
     private List<Variable> parameters;
     private Block body;
     private Type returnType;
+    private Integer level;
 
     /**
      * Creates a function object.
@@ -42,13 +43,22 @@ public class Function extends Declaration {
         return returnType;
     }
 
+    public Integer getLevel() {
+        return level == null ? 0 : level;
+    }
+
+    public boolean isExternal() {
+        return body == null;
+    }
+
     /**
      * Performs semantic analysis on the function's signature and return type, but not the body.
      */
     public void analyzeSignature(Log log, SymbolTable table, Function owner, boolean inLoop) {
         returnType = returnTypeName == null ? null : table.lookupType(returnTypeName, log);
+        level = owner == null ? 1 : owner.getLevel() + 1;
         SymbolTable tableForParameters;
-        if (body == null) {
+        if (isExternal()) {
             // It's an external function.  The parameters can go in a temporary scratch table.
             tableForParameters = new SymbolTable(null);
         } else {

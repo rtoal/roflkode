@@ -35,11 +35,12 @@ public class CallExpression extends VariableExpression {
     /**
      * Analyzes the call.
      */
-    public void analyze(Log log, SymbolTable table) {
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
 
         // Analyze all the arguments first.
         for (Expression a: args) {
-            a.analyze(log, table);
+            a.analyze(log, table, function, inLoop);
         }
 
         // Find out which function we're calling.

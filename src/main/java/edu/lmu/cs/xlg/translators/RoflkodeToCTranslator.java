@@ -3,8 +3,10 @@ package edu.lmu.cs.xlg.translators;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.lmu.cs.xlg.roflkode.entities.AgainStatement;
 import edu.lmu.cs.xlg.roflkode.entities.ArrayExpression;
@@ -76,6 +78,9 @@ public class RoflkodeToCTranslator {
     }
 
     private PrintWriter writer;
+    private List<Function> functions = new ArrayList<Function>();
+    private List<BukkitType> bukkitTypes = new ArrayList<BukkitType>();
+    private Set<Variable> nonLocallyAccessedVariables = new HashSet<Variable>();
 
     private RoflkodeToCTranslator(PrintWriter writer) {
         this.writer = writer;
@@ -91,9 +96,14 @@ public class RoflkodeToCTranslator {
         writer.println("#include <stdlib.h>");
         writer.println("#include <math.h>");
 
-        // First fetch all the bukkit types.  Render declarations then definitions.
-        List<BukkitType> bukkitTypes = fetchAllBukkitTypes(script);
+        // Get all the bukkit types, functions, and non-locally accessed variables.
+        preprocess(script);
 
+        for (Variable v :  nonLocallyAccessedVariables) {
+            writer.println("int __offset_" + v.getId() + ";");
+        }
+
+        // Emit type declarations then definitions, to handle mutual recursion.
         for (BukkitType b : bukkitTypes) {
             translateStructTypeDeclaration(b);
         }
@@ -102,10 +112,7 @@ public class RoflkodeToCTranslator {
             translateStructTypeDefinition(b);
         }
 
-        // Next fetch all the functions.  Render signatures then bodies.  Note that externs will
-        // of course have only signatures.
-        List<Function> functions = fetchAllFunctions(script);
-
+        // Emit function sigs THEN whole bodies, to handle mutual recursion.
         for (Function f: functions) {
             translateFunctionSignature(f);
             writer.println(";");
@@ -321,7 +328,7 @@ public class RoflkodeToCTranslator {
             writer.print(" = ");
             translateExpression(v.getInitializer());
         }
-        writer.print(";");
+        writer.println(";");
     }
 
     private void translateYoStatement(YoStatement s, String indent) {
@@ -579,28 +586,21 @@ public class RoflkodeToCTranslator {
         writer.print("TODO_BUKKIT_EXPRESSION");
     }
 
-    private List<BukkitType> fetchAllBukkitTypes(Script script) {
-        final List<BukkitType> types = new ArrayList<BukkitType>();
+    private void preprocess(Script script) {
         script.traverse(new Visitor() {
             public void visit(Entity e) {
                 if (e.getClass() == BukkitType.class) {
-                    types.add(BukkitType.class.cast(e));
-                }
-            }
-        });
-        return types;
-    }
-
-    private List<Function> fetchAllFunctions(Script script) {
-        final List<Function> functions = new ArrayList<Function>();
-        script.traverse(new Visitor() {
-            public void visit(Entity e) {
-                if (e.getClass() == Function.class) {
+                    bukkitTypes.add(BukkitType.class.cast(e));
+                } else if (e.getClass() == Function.class) {
                     functions.add(Function.class.cast(e));
+                } else if (e.getClass() == SimpleVariableExpression.class) {
+                    SimpleVariableExpression v = SimpleVariableExpression.class.cast(e);
+                    if (v.isNonLocal()) {
+                        nonLocallyAccessedVariables.add(v.getReferent());
+                    }
                 }
             }
         });
-        return functions;
     }
 
     /**

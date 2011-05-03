@@ -44,8 +44,8 @@ public class PropertyVariableExpression extends VariableExpression {
      * Analyzes this variable, checking that the variable expression before the dot has a type that
      * is a bukkit; that the property exists, etc.
      */
-    public void analyze(Log log, SymbolTable table) {
-        bukkit.analyze(log, table);
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        bukkit.analyze(log, table, function, inLoop);
 
         if (!(bukkit.type instanceof BukkitType)) {
             log.error("not.a.bukkit");

@@ -10,6 +10,7 @@ public class SimpleVariableExpression extends VariableExpression {
 
     private String name;
     private Variable referent;
+    private Boolean nonLocal;
 
     /**
      * Creates a simple variable expression.
@@ -33,11 +34,22 @@ public class SimpleVariableExpression extends VariableExpression {
     }
 
     /**
+     * Returns whether this variable reference is of a variable not declared in the function
+     * containing this reference.
+     */
+    public boolean isNonLocal() {
+        return nonLocal == null ? false : nonLocal.booleanValue();
+    }
+
+    /**
      * Analyzes the variable expression.
      */
-    public void analyze(Log log, SymbolTable table) {
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         referent = table.lookupVariable(name, log);
         type = referent.getType();
+        int functionLevel = function == null ? 0 : function.getLevel();
+        nonLocal = functionLevel != referent.getLevel();
     }
 
     /**

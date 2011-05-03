@@ -43,7 +43,8 @@ public class BukkitExpression extends Expression {
     /**
      * Analyzes the bukkit constructor expression.
      */
-    public void analyze(Log log, SymbolTable table) {
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         type = table.lookupType(typename, log);
         if (! (type instanceof BukkitType)) {
             log.error("not.a.bukkit.type", type.getName());
@@ -62,7 +63,7 @@ public class BukkitExpression extends Expression {
         while (ai.hasNext()) {
             Expression a = ai.next();
             BukkitType.Property f = fi.next();
-            a.analyze(log, table);
+            a.analyze(log, table, function, inLoop);
             a.assertAssignableTo(f.getType(), log, "property.type.error");
         }
     }

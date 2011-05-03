@@ -44,9 +44,10 @@ public class BinaryExpression extends Expression {
     /**
      * Analyzes the expression.
      */
-    public void analyze(Log log, SymbolTable table) {
-        left.analyze(log, table);
-        right.analyze(log, table);
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        left.analyze(log, table, function, inLoop);
+        right.analyze(log, table, function, inLoop);
 
         // num op num (for arithmetic op)
         if (op.matches("[-+*/]")) {

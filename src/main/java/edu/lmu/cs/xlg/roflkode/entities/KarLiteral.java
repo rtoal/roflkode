@@ -27,7 +27,8 @@ public class KarLiteral extends Literal {
     /**
      * Perform semantic analysis on this literal, figuring out the codepoint from the lexeme.
      */
-    public void analyze(Log log, SymbolTable table) {
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         type = Type.KAR;
 
         // When figuring out codepoint, don't consider the single quotes.

@@ -26,7 +26,8 @@ public class IntegerLiteral extends Literal {
     /**
      * Analyzes this literal, computing its value.
      */
-    public void analyze(Log log, SymbolTable table) {
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         type = Type.INT;
         try {
             value = Integer.valueOf(getLexeme());

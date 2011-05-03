@@ -29,7 +29,8 @@ public class StringLiteral extends Literal {
     /**
      * Analyzes this literal, gathering up codepoints.
      */
-    public void analyze(Log log, SymbolTable table) {
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         type = Type.YARN;
         codepoints = KarLiteral.codepoints(getLexeme(), 1, getLexeme().length() - 1, log);
     }

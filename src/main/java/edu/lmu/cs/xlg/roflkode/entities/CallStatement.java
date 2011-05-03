@@ -38,7 +38,7 @@ public class CallStatement extends Statement {
 
         // Analyze arguments first.
         for (Expression a: arguments) {
-            a.analyze(log, table);
+            a.analyze(log, table, function, inLoop);
         }
 
         // Find out which function we're referring to.

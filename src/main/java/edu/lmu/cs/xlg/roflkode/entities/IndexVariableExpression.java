@@ -37,9 +37,10 @@ public class IndexVariableExpression extends VariableExpression {
     /**
      * Analyzes this variable expression.
      */
-    public void analyze(Log log, SymbolTable table) {
-        array.analyze(log, table);
-        index.analyze(log, table);
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        array.analyze(log, table, function, inLoop);
+        index.analyze(log, table, function, inLoop);
 
         array.assertArrayOrString("[]", log);
         index.assertInteger("[]", log);

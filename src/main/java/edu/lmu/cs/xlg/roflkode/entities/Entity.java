@@ -152,7 +152,7 @@ public abstract class Entity {
      * A little interface to implement to navigate the semantic graph.
      */
     public static interface Visitor {
-        public void visit(Entity e);
+        void visit(Entity e);
     }
 
     /**

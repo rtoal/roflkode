@@ -36,9 +36,10 @@ public class AssignmentStatement extends Statement {
      * Analyzes the statement, ensuring that the target variable is writable and the right hand side
      * is type compatible with the type of the variable.
      */
-    public void analyze(Log log, SymbolTable table, Function f, boolean inLoop) {
-        left.analyze(log, table);
-        right.analyze(log, table);
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
+        left.analyze(log, table, function, inLoop);
+        right.analyze(log, table, function, inLoop);
         left.assertWritable(log);
         right.assertAssignableTo(left.type, log, "assignment.type.error");
     }

@@ -39,7 +39,7 @@ public class ConditionalStatement extends Statement {
     @Override
     public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         for (Arm arm: arms) {
-            arm.guard.analyze(log, table);
+            arm.guard.analyze(log, table, function, inLoop);
             arm.guard.assertBoolean("condition", log);
             arm.block.analyze(log, table, function, inLoop);
         }

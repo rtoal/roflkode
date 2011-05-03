@@ -17,7 +17,7 @@ public class NoobLiteral extends Literal {
     /**
      * Analyzes this literal.
      */
-    public void analyze(Log log, SymbolTable table) {
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         type = Type.N00B_TYPE;
     }
 }

@@ -34,10 +34,11 @@ public class ArrayExpression extends Expression {
      * Analyzes the array (constructor) expression.  We get to infer the type of the array
      * based on the types of the components.
      */
-    public void analyze(Log log, SymbolTable table) {
+    @Override
+    public void analyze(Log log, SymbolTable table, Function function, boolean inLoop) {
         // First analyze the subexpressions
         for (Expression e: expressions) {
-            e.analyze(log, table);
+            e.analyze(log, table, function, inLoop);
         }
 
         // Now lets get the type of the array expression. Begin by creating a set of all of the
