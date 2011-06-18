@@ -90,9 +90,7 @@ public class Compiler {
         if (log.getErrorCount() > 0) {
             return null;
         }
-        log.message("semantics.checking");
-        script.analyze(log);
-        return script;
+        return checkSemantics(script);
     }
 
     /**
