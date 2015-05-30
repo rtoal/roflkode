@@ -12,6 +12,22 @@ bracketing for array, bucket, and call expressions.
 
 ## Microsyntax
 
+```
+  letter     →  [\p{L}]
+  digit     →   [\d]
+  id         →  letter (letter | digit | '_')*
+  intlit     →  -? digit+
+  numlit     →  -? digit+ '.' digit+ ([Ee] [+-]? digit+)?
+  escape     →  ':' ([)>"':] | '(' [0-9A-Fa-f]{1,6} ')')
+  char       →  [^\p{Cc}'":] | escape
+  charlit    →  ['] (char | '"') [']
+  strlit     →  '"' (char | ['])* '"'
+  br         → ',' | [\r\n\x85\u2028\u2029]
+  ws         →  [ \t]
+  comment    →  'BTW' [^\r\n\x85\u2028\u2029]*
+  skip       →  ws | comment
+```
+
 ## Macrosyntax
 
 ```
